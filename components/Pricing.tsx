@@ -33,7 +33,7 @@ export default function Pricing() {
         "SLA guarantee (coming soon)",
       ],
       cta: "Get Pro",
-      href: "https://buy.stripe.com/dRmaERcT038S92DdMBcEw00",
+      href: "https://buy.stripe.com/8x28wJ4mu8tc0w76k9cEw01",
       featured: true,
     },
   ];
