@@ -3,7 +3,7 @@ import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
 import JsonPreview from "@/components/JsonPreview";
 import Pricing from "@/components/Pricing";
-import Feedback from "@/components/Feedback";
+// import Feedback from "@/components/Feedback";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
       <HowItWorks />
       <JsonPreview />
       <Pricing />
-      <Feedback />
+      {/* <Feedback /> */}
       <Footer />
     </main>
   );
