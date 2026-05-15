@@ -9,11 +9,17 @@ export default function Footer() {
           Website enrichment API — Beta
         </div>
         <div className="flex gap-6">
-          <a
-            href="mailto:hello@siteenrich.io"
+                    <a
+            href="mailto:info@siteenrich.io"
             className="mono text-xs text-[#444] hover:text-[#00ff88] transition-colors"
           >
-            hello@siteenrich.io
+            info@siteenrich.io
+          </a>
+          <a
+            href="mailto:support@siteenrich.io"
+            className="mono text-xs text-[#444] hover:text-[#00ff88] transition-colors"
+          >
+            support@siteenrich.io
           </a>
         </div>
       </div>
