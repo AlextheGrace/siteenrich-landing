@@ -37,7 +37,8 @@ function JsonLine({
     return (
       <>
         <div>
-          <span style={{ paddingLeft: pad * 8 + "px" }} />
+          <span style={{ paddingLeft: `${indent * 8}px` }} />
+
           <span className="text-[#9876aa]">"{k}"</span>
           <span className="text-white">: [</span>
         </div>
@@ -49,7 +50,7 @@ function JsonLine({
           </div>
         ))}
         <div>
-          <span style={{ paddingLeft: pad * 8 + "px" }} />
+          <span style={{ paddingLeft: `${indent * 8}px` }} />
           <span className="text-white">],</span>
         </div>
       </>
