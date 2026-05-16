@@ -9,7 +9,7 @@ export default function Footer() {
           Website enrichment API — Beta
         </div>
         <div className="flex gap-6">
-                    <a
+          <a
             href="mailto:info@siteenrich.io"
             className="mono text-xs text-[#444] hover:text-[#00ff88] transition-colors"
           >
@@ -20,6 +20,18 @@ export default function Footer() {
             className="mono text-xs text-[#444] hover:text-[#00ff88] transition-colors"
           >
             support@siteenrich.io
+          </a>
+          <a
+            href="https://nicklaunches.com/products/siteenrich/?utm_source=siteenrich.io&utm_medium=badge&utm_campaign=featured"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="https://nicklaunches.com/badges/featured-dark.svg"
+              alt="SiteEnrich on Nick Launches"
+              width="244"
+              height="56"
+            />
           </a>
         </div>
       </div>
