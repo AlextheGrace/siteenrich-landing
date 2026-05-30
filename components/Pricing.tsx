@@ -14,8 +14,8 @@ export default function Pricing() {
         "Graceful error handling",
         "Email support",
       ],
-      cta: "Get Starter",
-      href: "https://buy.stripe.com/dRmaERcT038S92DdMBcEw00",
+      cta: "Start free trial",
+      href: "#trial",
       featured: false,
     },
     {
@@ -32,8 +32,8 @@ export default function Pricing() {
         "Usage dashboard (coming soon)",
         "SLA guarantee (coming soon)",
       ],
-      cta: "Get Pro",
-      href: "https://buy.stripe.com/8x28wJ4mu8tc0w76k9cEw01",
+      cta: "Start free trial",
+      href: "#trial",
       featured: true,
     },
   ];
@@ -49,7 +49,10 @@ export default function Pricing() {
             Simple, transparent pricing
           </h2>
           <p className="text-[#666] mt-4 text-sm">
-            Beta pricing. Locked in forever for early customers.
+            Start with a free 7-day trial. No credit card needed.
+          </p>
+          <p className="text-[#444] mt-2 text-xs mono">
+            Beta pricing — locked in forever for early customers.
           </p>
         </div>
 
@@ -58,9 +61,7 @@ export default function Pricing() {
             <div
               key={plan.name}
               className={`card p-8 relative ${
-                plan.featured
-                  ? "border-[#00ff8833] green-glow"
-                  : ""
+                plan.featured ? "border-[#00ff8833] green-glow" : ""
               }`}
             >
               {plan.featured && (
@@ -102,6 +103,9 @@ export default function Pricing() {
               >
                 {plan.cta}
               </a>
+              <p className="text-center text-xs text-[#444] mt-3 mono">
+                7-day free trial — no credit card needed
+              </p>
             </div>
           ))}
         </div>
@@ -114,7 +118,11 @@ export default function Pricing() {
           <div className="space-y-4">
             {[
               {
-                q: "How do I get my API key?",
+                q: "How do I start the free trial?",
+                a: "Fill in the trial form above with your name and email. You'll receive an API key within a few hours. No credit card needed.",
+              },
+              {
+                q: "How do I get my API key after paying?",
                 a: "After payment you'll receive an email with your API key within a few hours. We're in beta so delivery is manual for now.",
               },
               {

@@ -31,10 +31,10 @@ export default function Hero() {
             Pricing
           </a>
           <a
-            href="#pricing"
+            href="#trial"
             className="mono text-xs px-4 py-2 border border-[#00ff88] text-[#00ff88] rounded hover:bg-[#00ff8811] transition-all"
           >
-            Get API Key
+            Free Trial
           </a>
         </div>
       </nav>
@@ -42,33 +42,39 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <div className="fade-up fade-up-delay-1 mono text-[#00ff88] text-xs tracking-widest uppercase mb-6">
-          Website Intelligence API — Beta
+          Pre-qualify leads before Apollo — save 70% on credits
         </div>
 
         <h1 className="fade-up fade-up-delay-2 text-5xl md:text-7xl font-light tracking-tight mb-6 leading-[1.1]">
-          Turn any URL into
+          Turn any company URL into
           <br />
-          <span className="text-[#00ff88]">structured data</span>
+          <span className="text-[#00ff88]">qualified sales intelligence</span>
         </h1>
 
-        <p className="fade-up fade-up-delay-3 text-lg text-[#666] max-w-xl mx-auto mb-10 leading-relaxed font-light">
-          Pass in a company URL. Get back clean JSON — company name, emails,
-          socials, and business signals. No parsing. Plugs directly into n8n,
-          Zapier, and Make.
+        <p className="fade-up fade-up-delay-3 text-lg text-[#666] max-w-xl mx-auto mb-6 leading-relaxed font-light">
+          Pass in a company URL. Get back emails, socials, and business signals like careers page and pricing page detection. Clean JSON. No parsing. Plugs directly into n8n, Zapier, and Make.
         </p>
+
+        {/* Testimonial */}
+        <div className="fade-up fade-up-delay-3 max-w-xl mx-auto mb-10 px-4 py-3 border border-[#1a1a1a] rounded text-left">
+          <p className="text-sm text-[#888] italic leading-relaxed">
+            "SiteEnrich for URL-based company signals as a pre-Apollo qualifier is a solid addition. The cost saving is significant — running URL enrichment first means you are spending Apollo credits only on accounts that pass the basic qualification criteria."
+          </p>
+          <p className="mono text-xs text-[#444] mt-2">— r/n8n community</p>
+        </div>
 
         <div className="fade-up fade-up-delay-4 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#pricing"
+            href="#trial"
             className="px-8 py-3.5 bg-[#00ff88] text-black font-medium rounded hover:bg-[#00e87a] transition-all green-glow text-sm"
           >
-            Start for $19/month
+            Start free 7-day trial
           </a>
           <a
-            href="#how-it-works"
+            href="#demo"
             className="px-8 py-3.5 border border-[#1a1a1a] text-[#666] rounded hover:border-[#333] hover:text-white transition-all text-sm"
           >
-            See how it works
+            Try the live demo
           </a>
         </div>
 
@@ -78,6 +84,14 @@ export default function Hero() {
           <div className="text-[#444] mb-3 pl-4">-H "X-API-Key: your-key"</div>
           <div className="text-[#00ff88]">✓ 200 OK — 387ms</div>
         </div>
+
+        {/* Scroll prompt */}
+        <a href="#demo" className="fade-up fade-up-delay-4 mt-8 flex flex-col items-center gap-2 text-[#444] hover:text-[#00ff88] transition-colors group">
+          <span className="mono text-xs">Or try it live below — no signup needed</span>
+          <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </a>
       </div>
     </section>
   );
