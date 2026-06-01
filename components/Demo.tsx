@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const DEMO_KEY = "test-key-123"; // Replace with a dedicated demo key in Railway
+const DEMO_KEY = "demo-public-siteenrich"; // Replace with a dedicated demo key in Railway
 
 
 
