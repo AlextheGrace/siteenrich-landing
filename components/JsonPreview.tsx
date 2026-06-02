@@ -5,10 +5,10 @@ const json = {
   domain: "stripe.com",
   companyName: "Stripe",
   metaDescription:
-    "Stripe is a financial services platform that helps all types of businesses accept payments.",
+    "Stripe is a financial services platform that helps businesses accept payments.",
   companyBlurb:
-    "Stripe is a financial services platform that helps all types of businesses accept payments.",
-  emails: ["press@stripe.com"],
+    "Stripe helps businesses accept payments, manage billing, and move money globally.",
+  emails: [],
   socials: [
     "https://twitter.com/stripe",
     "https://linkedin.com/company/stripe",
@@ -20,6 +20,20 @@ const json = {
     hasPricingPage: true,
     hasDemoCta: true,
   },
+  preEnrichment: {
+    status: "worth_enriching",
+    score: 85,
+    reasons: [
+      "Pricing page found",
+      "Demo CTA found",
+      "Careers page found",
+      "Contact page found",
+      "About page found",
+    ],
+    warnings: ["No public company email found"],
+  },
+  error: null,
+  errorMessage: null,
 };
 
 function JsonLine({
@@ -31,21 +45,18 @@ function JsonLine({
   v: unknown;
   indent?: number;
 }) {
-  const pad = "  ".repeat(indent);
-
   if (Array.isArray(v)) {
     return (
       <>
         <div>
           <span style={{ paddingLeft: `${indent * 8}px` }} />
-
           <span className="text-[#9876aa]">"{k}"</span>
           <span className="text-white">: [</span>
         </div>
         {v.map((item, i) => (
           <div key={i}>
             <span style={{ paddingLeft: (indent + 1) * 8 + "px" }} />
-            <span className="text-[#6a9955]">"{item}"</span>
+            <span className="text-[#6a9955]">"{String(item)}"</span>
             {i < v.length - 1 && <span className="text-white">,</span>}
           </div>
         ))}
@@ -61,28 +72,52 @@ function JsonLine({
     return (
       <>
         <div>
+          <span style={{ paddingLeft: `${indent * 8}px` }} />
           <span className="text-[#9876aa]">"{k}"</span>
           <span className="text-white">: {"{"}</span>
         </div>
+
         {Object.entries(v).map(([k2, v2]) => (
           <div key={k2} className="pl-4">
-            <span className="text-[#9876aa]">"{k2}"</span>
-            <span className="text-white">: </span>
-            <span className={v2 ? "text-[#569cd6]" : "text-[#ce9178]"}>
-              {String(v2)}
-            </span>
-            <span className="text-white">,</span>
+            <JsonLine k={k2} v={v2} indent={indent + 1} />
           </div>
         ))}
+
         <div>
-          <span className="text-white">{"}"}</span>
+          <span style={{ paddingLeft: `${indent * 8}px` }} />
+          <span className="text-white">{"}"},</span>
         </div>
       </>
     );
   }
 
+  if (typeof v === "boolean" || typeof v === "number") {
+    return (
+      <div>
+        <span style={{ paddingLeft: `${indent * 8}px` }} />
+        <span className="text-[#9876aa]">"{k}"</span>
+        <span className="text-white">: </span>
+        <span className="text-[#569cd6]">{String(v)}</span>
+        <span className="text-white">,</span>
+      </div>
+    );
+  }
+
+  if (v === null) {
+    return (
+      <div>
+        <span style={{ paddingLeft: `${indent * 8}px` }} />
+        <span className="text-[#9876aa]">"{k}"</span>
+        <span className="text-white">: </span>
+        <span className="text-[#569cd6]">null</span>
+        <span className="text-white">,</span>
+      </div>
+    );
+  }
+
   return (
     <div>
+      <span style={{ paddingLeft: `${indent * 8}px` }} />
       <span className="text-[#9876aa]">"{k}"</span>
       <span className="text-white">: </span>
       <span className="text-[#ce9178]">"{String(v)}"</span>
@@ -97,19 +132,20 @@ export default function JsonPreview() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <div className="mono text-[#00ff88] text-xs tracking-widest uppercase mb-4">
-            Response schema
+            Pre-enrichment decision
           </div>
           <h2 className="text-4xl font-light tracking-tight">
-            Consistent. Predictable. Ready to use.
+            Clean JSON your workflow can act on.
           </h2>
-          <p className="text-[#666] mt-4 max-w-lg mx-auto text-sm leading-relaxed">
-            Every response follows the same schema. Failed requests return 200
-            with an error field — your workflow never breaks.
+          <p className="text-[#666] mt-4 max-w-xl mx-auto text-sm leading-relaxed">
+            Every response includes raw website signals plus a first-pass
+            pre-enrichment decision: enrich, skip, or review. Failed requests
+            return structured errors so your workflow can route bad domains
+            without breaking.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-start">
-          {/* JSON output */}
           <div className="card overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-3 border-b border-[#1a1a1a]">
               <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
@@ -133,32 +169,31 @@ export default function JsonPreview() {
             </div>
           </div>
 
-          {/* Features list */}
           <div className="space-y-4">
             {[
               {
-                field: "companyName",
-                desc: "Extracted from og:site_name or page title. Cleaned and decoded.",
+                field: "preEnrichment.status",
+                desc: "A workflow-ready decision: worth_enriching, uncertain, or skip.",
               },
               {
-                field: "emails",
-                desc: "Real contact emails found on the page. Filtered to remove placeholders and false positives.",
+                field: "preEnrichment.score",
+                desc: "A simple first-pass score based on website signals, not a prediction that the company will buy.",
               },
               {
-                field: "socials",
-                desc: "LinkedIn, Twitter/X, Facebook, Instagram, YouTube, TikTok. Deduped and filtered.",
-              },
-              {
-                field: "signals.hasCareersPage",
-                desc: "Detected across 6 languages. Useful for identifying growing companies.",
+                field: "preEnrichment.reasons",
+                desc: "Human-readable reasons explaining why a company was marked worth enriching or not.",
               },
               {
                 field: "signals.hasPricingPage",
-                desc: "Know if a company is a SaaS or service business instantly.",
+                desc: "Helps identify commercial intent before spending credits on deeper enrichment.",
               },
               {
                 field: "signals.hasDemoCta",
-                desc: "Detects book a call, request demo, and similar CTAs.",
+                desc: "Detects demo/contact sales motion signals that often matter in outbound workflows.",
+              },
+              {
+                field: "signals.hasCareersPage",
+                desc: "A lightweight growth signal. Useful as one input, not a hard filter.",
               },
             ].map((item) => (
               <div key={item.field} className="card p-5">
@@ -173,10 +208,9 @@ export default function JsonPreview() {
           </div>
         </div>
 
-        {/* Error handling callout */}
         <div className="mt-12 card p-6 border-[#00ff8822]">
           <div className="mono text-[#00ff88] text-xs mb-3">
-            Error handling — workflow never breaks
+            Safe for automation workflows
           </div>
           <div className="grid sm:grid-cols-4 gap-4">
             {[
@@ -186,14 +220,17 @@ export default function JsonPreview() {
               { code: "site_blocked", desc: "Bot protected" },
             ].map((e) => (
               <div key={e.code} className="bg-[#0a0a0a] rounded p-3">
-                <div className="mono text-[#ce9178] text-xs mb-1">{e.code}</div>
+                <div className="mono text-[#ce9178] text-xs mb-1">
+                  {e.code}
+                </div>
                 <div className="text-[#555] text-xs">{e.desc}</div>
               </div>
             ))}
           </div>
           <p className="text-[#444] text-xs mono mt-4">
-            All failures return HTTP 200 with an error field — safe to use in
-            automation pipelines without try/catch
+            Expected failures return a structured error field, so n8n, Make,
+            Zapier, or custom workflows can route bad domains without stopping
+            the run.
           </p>
         </div>
       </div>
