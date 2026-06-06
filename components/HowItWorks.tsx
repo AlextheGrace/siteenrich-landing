@@ -9,24 +9,24 @@ export default function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Pass in a URL",
+      title: "Paste scraped URLs",
       description:
-        "Send any company website URL to the API endpoint. Works with any domain — no setup, no scraping rules to configure.",
-      code: "GET /analyze?url=acme.com",
+        "Send URLs from Google Maps, Outscraper, Apify, directories, CSVs, or n8n workflows. SiteEnrich is built for messy business URLs, not just perfect domains.",
+      code: "GET /analyze?url=business.localsearch.com",
     },
     {
       number: "02",
-      title: "We analyze it",
+      title: "We clean and classify",
       description:
-        "SiteEnrich fetches the page, extracts structured data, and normalizes it into a consistent JSON schema. Fast — ~400ms average.",
-      code: "Processing... 387ms",
+        "SiteEnrich cleans tracking URLs, detects hosted subdomains, flags directory/profile URLs, checks if the site is live, and looks for basic business signals.",
+      code: "sourceType: directory_profile",
     },
     {
       number: "03",
-      title: "Get clean JSON",
+      title: "Route the row",
       description:
-        "Receive structured company data ready to plug into your workflow. No parsing step. Every response follows the same schema.",
-      code: '{ "companyName": "Acme", ... }',
+        "Get usable / review / skip with reasons. Send good rows to Clay, Apollo, Prospeo, CRM import, or outreach. Hold back weak rows before they waste credits.",
+      code: "status: review",
     },
   ];
 
@@ -38,7 +38,7 @@ export default function HowItWorks() {
             How it works
           </div>
           <h2 className="text-4xl font-light tracking-tight">
-            Three steps. No surprises.
+            From messy URL to usable row.
           </h2>
         </div>
 
@@ -62,7 +62,7 @@ export default function HowItWorks() {
         {/* Compatibility */}
         <div className="mt-24 text-center">
           <p className="mono text-[#444] text-xs uppercase tracking-widest mb-8">
-            Works with
+            Fits into
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
             {tools.map((tool) => (

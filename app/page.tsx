@@ -9,13 +9,13 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <Hero />
-      <Demo />
-      <HowItWorks />
-      <JsonPreview />
-      <Trial />
-      <Pricing />
-      <Footer />
+<Hero />
+<Demo />
+<JsonPreview />
+<HowItWorks />
+<Pricing />
+<Trial />
+<Footer />
     </main>
   );
 }

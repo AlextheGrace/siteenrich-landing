@@ -1,36 +1,34 @@
 "use client";
 
 const json = {
-  url: "https://stripe.com",
-  domain: "stripe.com",
-  companyName: "Stripe",
-  metaDescription:
-    "Stripe is a financial services platform that helps businesses accept payments.",
-  companyBlurb:
-    "Stripe helps businesses accept payments, manage billing, and move money globally.",
-  emails: [],
-  socials: [
-    "https://twitter.com/stripe",
-    "https://linkedin.com/company/stripe",
-  ],
+  inputUrl:
+    "https://examplecontractor.com/%3Futm_source%3Dgoogle%26utm_medium%3Dorganic",
+  cleanedUrl: "https://examplecontractor.com",
+  sourceType: "tracking_url",
+  needsResolver: false,
+  scoringProfile: "local_service",
+  domain: "examplecontractor.com",
+  companyName: "Example Contractor",
+  emails: ["info@examplecontractor.com"],
+  socials: ["https://facebook.com/examplecontractor"],
   signals: {
-    hasCareersPage: true,
     hasContactPage: true,
     hasAboutPage: true,
-    hasPricingPage: true,
-    hasDemoCta: true,
+    hasPhone: true,
+    hasQuoteCta: true,
+    hasServiceKeywords: true,
   },
   preEnrichment: {
-    status: "worth_enriching",
-    score: 85,
+    status: "usable",
+    score: 90,
     reasons: [
-      "Pricing page found",
-      "Demo CTA found",
-      "Careers page found",
+      "Tracking URL cleaned",
+      "Real business website detected",
       "Contact page found",
-      "About page found",
+      "Phone number found",
+      "Quote/contact CTA found",
     ],
-    warnings: ["No public company email found"],
+    warnings: [],
   },
   error: null,
   errorMessage: null,
@@ -132,16 +130,16 @@ export default function JsonPreview() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <div className="mono text-[#00ff88] text-xs tracking-widest uppercase mb-4">
-            Pre-enrichment decision
+            Workflow-ready decision
           </div>
           <h2 className="text-4xl font-light tracking-tight">
-            Clean JSON your workflow can act on.
+            Know which rows should move forward.
           </h2>
           <p className="text-[#666] mt-4 max-w-xl mx-auto text-sm leading-relaxed">
-            Every response includes raw website signals plus a first-pass
-            pre-enrichment decision: enrich, skip, or review. Failed requests
-            return structured errors so your workflow can route bad domains
-            without breaking.
+            Every response returns a cleaned URL, source type, resolver flag,
+            website signals when available, and a usable / review / skip
+            decision with reasons. Bad URLs do not break your workflow — they
+            get routed.
           </p>
         </div>
 
@@ -172,28 +170,28 @@ export default function JsonPreview() {
           <div className="space-y-4">
             {[
               {
-                field: "preEnrichment.status",
-                desc: "A workflow-ready decision: worth_enriching, uncertain, or skip.",
+                field: "sourceType",
+                desc: "Classifies the scraped URL as a real domain, tracking URL, hosted subdomain, directory/profile URL, dead site, or other source type.",
               },
               {
-                field: "preEnrichment.score",
-                desc: "A simple first-pass score based on website signals, not a prediction that the company will buy.",
+                field: "needsResolver",
+                desc: "Flags rows that should not go directly into enrichment because the real business website may need to be resolved first.",
+              },
+              {
+                field: "preEnrichment.status",
+                desc: "A workflow-ready decision: usable, review, or skip before the row hits Clay, Apollo, Prospeo, CRM import, or outreach.",
               },
               {
                 field: "preEnrichment.reasons",
-                desc: "Human-readable reasons explaining why a company was marked worth enriching or not.",
+                desc: "Human-readable reasons explaining why the row was marked usable, review, or skip.",
               },
               {
-                field: "signals.hasPricingPage",
-                desc: "Helps identify commercial intent before spending credits on deeper enrichment.",
+                field: "preEnrichment.warnings",
+                desc: "Warnings for blocked sites, dead sites, thin signals, missing emails, directory URLs, or other issues.",
               },
               {
-                field: "signals.hasDemoCta",
-                desc: "Detects demo/contact sales motion signals that often matter in outbound workflows.",
-              },
-              {
-                field: "signals.hasCareersPage",
-                desc: "A lightweight growth signal. Useful as one input, not a hard filter.",
+                field: "signals",
+                desc: "When the site is reachable, SiteEnrich can return contact/about pages, phone/email/social signals, quote CTAs, and other local-business indicators.",
               },
             ].map((item) => (
               <div key={item.field} className="card p-5">
@@ -214,10 +212,10 @@ export default function JsonPreview() {
           </div>
           <div className="grid sm:grid-cols-4 gap-4">
             {[
-              { code: "dns_failed", desc: "Dead domain" },
-              { code: "ssl_error", desc: "Bad certificate" },
-              { code: "timeout", desc: "Slow site" },
-              { code: "site_blocked", desc: "Bot protected" },
+              { code: "directory_profile", desc: "Needs resolver" },
+              { code: "dead_or_unreachable", desc: "Bad site" },
+              { code: "hosted_subdomain", desc: "Review row" },
+              { code: "tracking_url", desc: "Cleanable URL" },
             ].map((e) => (
               <div key={e.code} className="bg-[#0a0a0a] rounded p-3">
                 <div className="mono text-[#ce9178] text-xs mb-1">
@@ -228,9 +226,9 @@ export default function JsonPreview() {
             ))}
           </div>
           <p className="text-[#444] text-xs mono mt-4">
-            Expected failures return a structured error field, so n8n, Make,
-            Zapier, or custom workflows can route bad domains without stopping
-            the run.
+            Expected messy inputs return structured fields, so n8n, Make,
+            Zapier, Google Sheets, or custom workflows can route rows without
+            stopping the run.
           </p>
         </div>
       </div>

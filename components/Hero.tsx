@@ -42,23 +42,23 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <div className="fade-up fade-up-delay-1 mono text-[#00ff88] text-xs tracking-widest uppercase mb-6">
-          Pre-qualify leads before Apollo — save 70% on credits
+      Messy scraped URLs → usable company rows
         </div>
 
         <h1 className="fade-up fade-up-delay-2 text-5xl md:text-7xl font-light tracking-tight mb-6 leading-[1.1]">
-          Turn any company URL into
+          Turn messy scraped business URLs into
           <br />
-          <span className="text-[#00ff88]">qualified sales intelligence</span>
+          <span className="text-[#00ff88]">usable company rows</span>
         </h1>
 
         <p className="fade-up fade-up-delay-3 text-lg text-[#666] max-w-xl mx-auto mb-6 leading-relaxed font-light">
-          Pass in a company URL. Get back emails, socials, and business signals like careers page and pricing page detection. Clean JSON. No parsing. Plugs directly into n8n, Zapier, and Make.
+          Paste URLs from Google Maps, Outscraper, Apify, directories, or CSVs. SiteEnrich cleans and classifies each business URL, checks if the site is usable, and returns usable / review / skip with reasons before rows hit Clay, Apollo, or outreach.
         </p>
 
         {/* Testimonial */}
         <div className="fade-up fade-up-delay-3 max-w-xl mx-auto mb-10 px-4 py-3 border border-[#1a1a1a] rounded text-left">
           <p className="text-sm text-[#888] italic leading-relaxed">
-            "SiteEnrich for URL-based company signals as a pre-Apollo qualifier is a solid addition. The cost saving is significant — running URL enrichment first means you are spending Apollo credits only on accounts that pass the basic qualification criteria."
+        "Teams often blame Clay or Apollo when the real issue is garbage going in. A cleanup layer before enrichment makes sense — the key is making the wasted rows visible."
           </p>
           <p className="mono text-xs text-[#444] mt-2">— r/n8n community</p>
         </div>
@@ -68,19 +68,19 @@ export default function Hero() {
             href="#trial"
             className="px-8 py-3.5 bg-[#00ff88] text-black font-medium rounded hover:bg-[#00e87a] transition-all green-glow text-sm"
           >
-            Start free 7-day trial
+          Run 20 sample URLs
           </a>
           <a
             href="#demo"
             className="px-8 py-3.5 border border-[#1a1a1a] text-[#666] rounded hover:border-[#333] hover:text-white transition-all text-sm"
           >
-            Try the live demo
+            Try a messy URL
           </a>
         </div>
 
         {/* Quick example */}
         <div className="fade-up fade-up-delay-4 mt-16 mono text-xs text-left max-w-lg mx-auto card p-4">
-          <div className="text-[#444] mb-2">$ curl api.siteenrich.io/analyze?url=stripe.com \</div>
+          <div className="text-[#444] mb-2">$ curl api.siteenrich.io/analyze?url=messy-business-url.com \</div>
           <div className="text-[#444] mb-3 pl-4">-H "X-API-Key: your-key"</div>
           <div className="text-[#00ff88]">✓ 200 OK — 387ms</div>
         </div>

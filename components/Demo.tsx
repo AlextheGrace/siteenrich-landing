@@ -132,7 +132,7 @@ export default function Demo() {
                             className="inline-block px-8 py-3.5 bg-[#00ff88] text-black font-medium rounded hover:bg-[#00e87a] transition-all text-sm"
                             style={{ boxShadow: "0 0 20px #00ff8833" }}
                         >
-                            Start 7-day free trial
+                            Start 14-day free trial
                         </a>
                     </div>
                 )}

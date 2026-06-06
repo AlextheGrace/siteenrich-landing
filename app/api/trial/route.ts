@@ -1,7 +1,7 @@
-import { Resend } from 'resend';
-import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const supabase = createClient(
@@ -10,68 +10,101 @@ const supabase = createClient(
 );
 
 function generateApiKey(): string {
-  return 'sk-' + crypto.randomBytes(16).toString('hex');
+  return "sk-" + crypto.randomBytes(16).toString("hex");
 }
 
 export async function POST(req: NextRequest) {
   const { name, email } = await req.json();
 
   if (!name || !email) {
-    return NextResponse.json({ error: 'Name and email required' }, { status: 400 });
+    return NextResponse.json(
+      { error: "Name and email required" },
+      { status: 400 }
+    );
   }
 
   const key = generateApiKey();
   const trialEndsAt = new Date();
-  trialEndsAt.setDate(trialEndsAt.getDate() + 7);
+  trialEndsAt.setDate(trialEndsAt.getDate() + 14);
 
-  const { error } = await supabase.from('api_keys').insert({
+  const { error } = await supabase.from("api_keys").insert({
     name,
     email,
     key,
-    plan: 'trial',
+    plan: "beta",
     active: true,
-    trial_ends_at: trialEndsAt.toISOString()
+    trial_ends_at: trialEndsAt.toISOString(),
+    monthly_limit: 20,
   });
 
   if (error) {
-    console.error('Supabase error:', error);
+    console.error("Supabase error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   await resend.emails.send({
-    from: 'Alex at SiteEnrich <info@siteenrich.io>',
+    from: "Alex at SiteEnrich <info@siteenrich.io>",
     to: email,
-    subject: 'Your SiteEnrich API key',
+    subject: "Your SiteEnrich beta key",
     html: `
       <div style="font-family: monospace; max-width: 600px; margin: 0 auto; padding: 40px; background: #0a0a0a; color: #fff;">
         <h2 style="color: #00ff88; margin-bottom: 8px;">Hey ${name} 👋</h2>
-        <p style="color: #888;">Here's your SiteEnrich API key:</p>
+
+        <p style="color: #888; line-height: 1.6;">
+          Here is your SiteEnrich beta key. Use it to test 20 scraped business URLs.
+        </p>
+
+        <p style="color: #888; line-height: 1.6;">
+          SiteEnrich turns messy scraped business URLs into usable company rows before enrichment or outreach.
+        </p>
+
         <div style="background: #111; border: 1px solid #333; padding: 16px; border-radius: 8px; margin: 20px 0;">
           <code style="color: #00ff88; font-size: 14px;">${key}</code>
         </div>
-        <p style="color: #888;">Test it right now:</p>
+
+        <p style="color: #888; line-height: 1.6;">Test it right now:</p>
+
         <div style="background: #111; border: 1px solid #333; padding: 16px; border-radius: 8px; margin: 20px 0;">
-          <code style="color: #666; font-size: 12px;">curl "https://api.siteenrich.io/analyze?url=stripe.com" \<br>-H "X-API-Key: ${key}"</code>
+          <code style="color: #666; font-size: 12px;">
+            curl "https://api.siteenrich.io/analyze?url=examplecontractor.com/%3Futm_source%3Dgoogle" \\<br>
+            -H "X-API-Key: ${key}"
+          </code>
         </div>
-        <p style="color: #888;">Or in n8n — HTTP Request node, GET, same URL, X-API-Key header.</p>
-        <p style="color: #888;">Check out the <a href="https://github.com/AlextheGrace/siteenrich-n8n-workflow" style="color: #00ff88;">n8n workflow template on GitHub</a> to get started fast.</p>
-        <p style="color: #888;">Let me know what you're building — just reply to this email.</p>
-        <p style="color: #666; margin-top: 40px;">Alex<br>Founder, SiteEnrich<br><a href="https://siteenrich.io" style="color: #00ff88;">siteenrich.io</a></p>
+
+        <p style="color: #888; line-height: 1.6;">
+          Try URLs from Google Maps, Outscraper, Apify, directories, CSVs, or n8n workflows.
+        </p>
+
+        <p style="color: #888; line-height: 1.6;">
+          The response returns cleanedUrl, sourceType, needsResolver, signals, and a usable / review / skip decision with reasons.
+        </p>
+
+        <p style="color: #888; line-height: 1.6;">
+          If you want me to run a full CSV, just reply to this email.
+        </p>
+
+        <p style="color: #666; margin-top: 40px;">
+          Alex<br>
+          Founder, SiteEnrich<br>
+          <a href="https://siteenrich.io" style="color: #00ff88;">siteenrich.io</a>
+        </p>
       </div>
-    `
+    `,
   });
 
   await resend.emails.send({
-    from: 'SiteEnrich <info@siteenrich.io>',
-    to: 'abfgrace@googlemail.com',
-    subject: `New trial signup: ${name}`,
+    from: "SiteEnrich <info@siteenrich.io>",
+    to: "abfgrace@googlemail.com",
+    subject: `New SiteEnrich beta signup: ${name}`,
     html: `
-      <p><strong>New trial signup!</strong></p>
+      <p><strong>New SiteEnrich beta signup</strong></p>
       <p>Name: ${name}</p>
       <p>Email: ${email}</p>
       <p>Key: ${key}</p>
+      <p>Plan: beta</p>
+      <p>Limit: 20 scraped URLs</p>
       <p>Trial ends: ${trialEndsAt.toDateString()}</p>
-    `
+    `,
   });
 
   return NextResponse.json({ success: true, key });

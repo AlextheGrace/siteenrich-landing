@@ -1,62 +1,80 @@
 export default function Pricing() {
   const plans = [
     {
-      name: "Starter",
-      price: "$19",
-      period: "/month",
-      description: "For solo builders and small workflows.",
-      requests: "2,000 requests/month",
+      name: "Free Test",
+      price: "$0",
+      period: "",
+      description: "For testing SiteEnrich on a real scraped list sample.",
+      requests: "20 scraped URLs",
       features: [
-        "Full JSON response schema",
-        "Email extraction",
-        "Social link detection",
-        "Business signals",
-        "Graceful error handling",
-        "Email support",
+        "Usable / review / skip",
+        "Cleaned URL",
+        "Source type classification",
+        "Needs resolver flag",
+        "Basic website signals",
+        "Reasons and warnings",
       ],
-      cta: "Start free trial",
+      cta: "Run 20 sample URLs",
       href: "#trial",
       featured: false,
     },
     {
-      name: "Pro",
+      name: "Starter QA Run",
       price: "$49",
-      period: "/month",
-      description: "For teams and production workflows.",
-      requests: "10,000 requests/month",
+      period: "one-time",
+      description: "For cleaning and checking one scraped CSV or Google Sheet.",
+      requests: "Up to 1,000 URLs",
       features: [
-        "Everything in Starter",
-        "5x more requests",
-        "Priority support",
-        "Early access to new signals",
-        "Usage dashboard (coming soon)",
-        "SLA guarantee (coming soon)",
+        "Everything in Free Test",
+        "CSV or Google Sheet output",
+        "Directory/profile URL detection",
+        "Dead or unreachable site detection",
+        "Hosted subdomain detection",
+        "Basic email/social/signal extraction",
       ],
-      cta: "Start free trial",
+      cta: "Start a QA run",
       href: "#trial",
       featured: true,
+    },
+    {
+      name: "Operator",
+      price: "$199",
+      period: "/month",
+      description: "For recurring lead-list QA before enrichment or outreach.",
+      requests: "Up to 10,000 URLs/month",
+      features: [
+        "Everything in Starter QA Run",
+        "API access",
+        "n8n / Google Sheets setup help",
+        "Workflow-ready JSON",
+        "Priority beta support",
+        "Early access to batch processing",
+      ],
+      cta: "Get beta access",
+      href: "#trial",
+      featured: false,
     },
   ];
 
   return (
     <section id="pricing" className="py-32 px-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-16">
           <div className="mono text-[#00ff88] text-xs tracking-widest uppercase mb-4">
             Pricing
           </div>
           <h2 className="text-4xl font-light tracking-tight">
-            Simple, transparent pricing
+            Beta pricing for scraped URL QA
           </h2>
           <p className="text-[#666] mt-4 text-sm">
-            Start with a free 7-day trial. No credit card needed.
+            Start with a free 20-URL test. No credit card needed.
           </p>
           <p className="text-[#444] mt-2 text-xs mono">
-            Beta pricing — locked in forever for early customers.
+            Built for messy scraped business URLs before enrichment or outreach.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan) => (
             <div
               key={plan.name}
@@ -66,7 +84,7 @@ export default function Pricing() {
             >
               {plan.featured && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 mono text-xs text-black bg-[#00ff88] px-3 py-1 rounded-full">
-                  Most popular
+                  Best first paid test
                 </div>
               )}
 
@@ -76,7 +94,11 @@ export default function Pricing() {
                 </div>
                 <div className="flex items-end gap-1 mb-2">
                   <span className="text-5xl font-light">{plan.price}</span>
-                  <span className="text-[#666] text-sm mb-2">{plan.period}</span>
+                  {plan.period && (
+                    <span className="text-[#666] text-sm mb-2">
+                      {plan.period}
+                    </span>
+                  )}
                 </div>
                 <div className="mono text-[#00ff88] text-xs mb-3">
                   {plan.requests}
@@ -103,8 +125,9 @@ export default function Pricing() {
               >
                 {plan.cta}
               </a>
+
               <p className="text-center text-xs text-[#444] mt-3 mono">
-                7-day free trial — no credit card needed
+                No credit card needed for the free test
               </p>
             </div>
           ))}
@@ -118,24 +141,28 @@ export default function Pricing() {
           <div className="space-y-4">
             {[
               {
-                q: "How do I start the free trial?",
-                a: "Fill in the trial form above with your name and email. You'll receive an API key within a few hours. No credit card needed.",
+                q: "What does SiteEnrich do?",
+                a: "SiteEnrich turns messy scraped business URLs into usable company rows before enrichment or outreach. It cleans and classifies each URL, checks whether the site is usable, and returns usable / review / skip with reasons.",
               },
               {
-                q: "How do I get my API key after paying?",
-                a: "After payment you'll receive an email with your API key within a few hours. We're in beta so delivery is manual for now.",
+                q: "Is this just URL cleanup?",
+                a: "No. Basic URL cleanup removes tracking parameters. SiteEnrich also detects directory/profile URLs, hosted subdomains, dead or unreachable sites, weak sites, and useful website signals so your workflow can decide what should continue downstream.",
               },
               {
-                q: "What happens when I hit my limit?",
-                a: "Requests return 429 when you exceed your monthly limit. Upgrade to Pro or wait until next month.",
+                q: "Do I need an API to use it?",
+                a: "Not at first. For beta users, we can return a CSV or Google Sheet. The API is available when you want to plug SiteEnrich into n8n, Google Sheets, Make, Zapier, or your own workflow.",
+              },
+              {
+                q: "What happens in the free test?",
+                a: "You get access to run 20 scraped business URLs and see the output: cleaned URL, source type, needs resolver flag, usable / review / skip, signals, reasons, and warnings.",
+              },
+              {
+                q: "Who is this for?",
+                a: "SiteEnrich is for people working with scraped local or SMB lead lists from Google Maps, Outscraper, Apify, Leadswift, directories, CSVs, or n8n workflows before sending rows into Clay, Apollo, Prospeo, CRM import, or outreach.",
               },
               {
                 q: "Does it work on all websites?",
-                a: "SiteEnrich works on ~86% of sites. JS-heavy sites protected by Cloudflare may not return full data — these return a graceful error response.",
-              },
-              {
-                q: "Can I use it in n8n or Zapier?",
-                a: "Yes — it's built for automation workflows. Use the HTTP Request node in n8n or a Webhook step in Zapier. Clean JSON out, no parsing needed.",
+                a: "No. Some sites are blocked, dead, slow, or protected. Those failures return structured statuses and warnings so your workflow can route them instead of breaking.",
               },
             ].map((item) => (
               <div key={item.q} className="card p-6">
