@@ -8,9 +8,7 @@ function TrialSuccessContent() {
   const apiKey = searchParams.get("key") ?? "your-api-key";
   const [copied, setCopied] = useState(false);
   const [copiedCurl, setCopiedCurl] = useState(false);
-
-  const curlExample = `curl "https://api.siteenrich.io/analyze?url=examplecontractor.com/%3Futm_source%3Dgoogle" \\
--H "X-API-Key: ${apiKey}"`;
+  const curlExample = `curl "https://api.siteenrich.io/analyze?url=sample-business.test/%3Futm_source%3Dgoogle" \\ -H "X-API-Key: ${apiKey}"`;
 
   function copyKey() {
     navigator.clipboard.writeText(apiKey);
@@ -120,15 +118,15 @@ function TrialSuccessContent() {
           </div>
 
           <pre className="text-xs text-[#888] bg-[#111] px-4 py-4 rounded border border-[#1a1a1a] overflow-x-auto leading-6">{`{
-  "inputUrl": "https://examplecontractor.com/%3Futm_source%3Dgoogle",
-  "cleanedUrl": "https://examplecontractor.com",
+"inputUrl": "https://sample-business.test/%3Futm_source%3Dgoogle",
+"cleanedUrl": "https://sample-business.test"
   "sourceType": "tracking_url",
   "needsResolver": false,
   "scoringProfile": "local_service",
-  "domain": "examplecontractor.com",
-  "companyName": "Example Contractor",
-  "emails": ["info@examplecontractor.com"],
-  "socials": ["https://facebook.com/examplecontractor"],
+  "domain": "sample-business.test",
+  "companyName": "Sample Business",
+  "emails": ["info@sample-business.test"],
+  "socials": ["https://facebook.com/sample-business"],
   "signals": {
     "hasContactPage": true,
     "hasAboutPage": true,
