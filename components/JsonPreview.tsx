@@ -2,15 +2,15 @@
 
 const json = {
   inputUrl:
-    "https://examplecontractor.com/%3Futm_source%3Dgoogle%26utm_medium%3Dorganic",
-  cleanedUrl: "https://examplecontractor.com",
+    "https://sample-business.test/%3Futm_source%3Dgoogle%26utm_medium%3Dorganic",
+  cleanedUrl: "https://sample-business.test",
   sourceType: "tracking_url",
   needsResolver: false,
   scoringProfile: "local_service",
-  domain: "examplecontractor.com",
-  companyName: "Example Contractor",
-  emails: ["info@examplecontractor.com"],
-  socials: ["https://facebook.com/examplecontractor"],
+  domain: "sample-business.test",
+  companyName: "Sample Business",
+  emails: ["info@sample-business.test"],
+  socials: [],
   signals: {
     hasContactPage: true,
     hasAboutPage: true,
