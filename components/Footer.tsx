@@ -8,7 +8,7 @@ export default function Footer() {
             SiteEnrich
           </div>
           <div className="mono text-[#333] text-xs">
-            Website enrichment API
+            Scraped business URL QA
           </div>
           <div className="flex gap-6">
             <a

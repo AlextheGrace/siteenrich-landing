@@ -1,4 +1,6 @@
 export default function Pricing() {
+  const stripeQaRunUrl = process.env.NEXT_PUBLIC_STRIPE_QA_RUN_URL || "#trial";
+
   const plans = [
     {
       name: "Free Test",
@@ -17,6 +19,8 @@ export default function Pricing() {
       cta: "Run 20 sample URLs",
       href: "#trial",
       featured: false,
+      external: false,
+      note: "No credit card needed",
     },
     {
       name: "Starter QA Run",
@@ -32,9 +36,17 @@ export default function Pricing() {
         "Hosted subdomain detection",
         "Basic email/social/signal extraction",
       ],
-      cta: "Start a QA run",
-      href: "#trial",
+      cta:
+        stripeQaRunUrl === "#trial"
+          ? "Start with 20 free rows"
+          : "Run full CSV for $49",
+      href: stripeQaRunUrl,
       featured: true,
+      external: stripeQaRunUrl !== "#trial",
+      note:
+        stripeQaRunUrl === "#trial"
+          ? "Free sample first, then full CSV"
+          : "One-time CSV run",
     },
     {
       name: "Operator",
@@ -53,6 +65,35 @@ export default function Pricing() {
       cta: "Get beta access",
       href: "#trial",
       featured: false,
+      external: false,
+      note: "Beta access by request",
+    },
+  ];
+
+  const faqs = [
+    {
+      q: "What does SiteEnrich do?",
+      a: "SiteEnrich turns messy scraped business URLs into usable company rows before enrichment or outreach. It cleans and classifies each URL, checks whether the site is usable, and returns usable / review / skip with reasons.",
+    },
+    {
+      q: "Is this just URL cleanup?",
+      a: "No. Basic URL cleanup removes tracking parameters. SiteEnrich also detects directory/profile URLs, hosted subdomains, dead or unreachable sites, weak sites, and useful website signals so your workflow can decide what should continue downstream.",
+    },
+    {
+      q: "Do I need an API to use it?",
+      a: "Not at first. For beta users, we can return a CSV or Google Sheet. The API is available when you want to plug SiteEnrich into n8n, Google Sheets, Make, Zapier, or your own workflow.",
+    },
+    {
+      q: "What happens in the free test?",
+      a: "You get access to run 20 scraped business URLs and see the output: cleaned URL, source type, needs resolver flag, usable / review / skip, signals, reasons, and warnings.",
+    },
+    {
+      q: "Who is this for?",
+      a: "SiteEnrich is for people working with scraped local or SMB lead lists from Google Maps, Outscraper, Apify, Leadswift, directories, CSVs, or n8n workflows before sending rows into Clay, Apollo, Prospeo, CRM import, or outreach.",
+    },
+    {
+      q: "Does it work on all websites?",
+      a: "No. Some sites are blocked, dead, slow, or protected. Those failures return structured statuses and warnings so your workflow can route them instead of breaking.",
     },
   ];
 
@@ -63,12 +104,15 @@ export default function Pricing() {
           <div className="mono text-[#00ff88] text-xs tracking-widest uppercase mb-4">
             Pricing
           </div>
+
           <h2 className="text-4xl font-light tracking-tight">
             Beta pricing for scraped URL QA
           </h2>
+
           <p className="text-[#666] mt-4 text-sm">
             Start with a free 20-URL test. No credit card needed.
           </p>
+
           <p className="text-[#444] mt-2 text-xs mono">
             Built for messy scraped business URLs before enrichment or outreach.
           </p>
@@ -92,6 +136,7 @@ export default function Pricing() {
                 <div className="mono text-[#666] text-xs uppercase tracking-widest mb-2">
                   {plan.name}
                 </div>
+
                 <div className="flex items-end gap-1 mb-2">
                   <span className="text-5xl font-light">{plan.price}</span>
                   {plan.period && (
@@ -100,23 +145,27 @@ export default function Pricing() {
                     </span>
                   )}
                 </div>
+
                 <div className="mono text-[#00ff88] text-xs mb-3">
                   {plan.requests}
                 </div>
+
                 <p className="text-[#666] text-sm">{plan.description}</p>
               </div>
 
               <ul className="space-y-3 mb-8">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm">
                     <span className="text-[#00ff88] mono mt-0.5">✓</span>
-                    <span className="text-[#888]">{f}</span>
+                    <span className="text-[#888]">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <a
                 href={plan.href}
+                target={plan.external ? "_blank" : undefined}
+                rel={plan.external ? "noopener noreferrer" : undefined}
                 className={`block text-center py-3.5 rounded text-sm font-medium transition-all ${
                   plan.featured
                     ? "bg-[#00ff88] text-black hover:bg-[#00e87a] green-glow"
@@ -127,44 +176,19 @@ export default function Pricing() {
               </a>
 
               <p className="text-center text-xs text-[#444] mt-3 mono">
-                No credit card needed for the free test
+                {plan.note}
               </p>
             </div>
           ))}
         </div>
 
-        {/* FAQ */}
         <div className="mt-20">
           <div className="mono text-[#444] text-xs uppercase tracking-widest mb-8 text-center">
             Common questions
           </div>
+
           <div className="space-y-4">
-            {[
-              {
-                q: "What does SiteEnrich do?",
-                a: "SiteEnrich turns messy scraped business URLs into usable company rows before enrichment or outreach. It cleans and classifies each URL, checks whether the site is usable, and returns usable / review / skip with reasons.",
-              },
-              {
-                q: "Is this just URL cleanup?",
-                a: "No. Basic URL cleanup removes tracking parameters. SiteEnrich also detects directory/profile URLs, hosted subdomains, dead or unreachable sites, weak sites, and useful website signals so your workflow can decide what should continue downstream.",
-              },
-              {
-                q: "Do I need an API to use it?",
-                a: "Not at first. For beta users, we can return a CSV or Google Sheet. The API is available when you want to plug SiteEnrich into n8n, Google Sheets, Make, Zapier, or your own workflow.",
-              },
-              {
-                q: "What happens in the free test?",
-                a: "You get access to run 20 scraped business URLs and see the output: cleaned URL, source type, needs resolver flag, usable / review / skip, signals, reasons, and warnings.",
-              },
-              {
-                q: "Who is this for?",
-                a: "SiteEnrich is for people working with scraped local or SMB lead lists from Google Maps, Outscraper, Apify, Leadswift, directories, CSVs, or n8n workflows before sending rows into Clay, Apollo, Prospeo, CRM import, or outreach.",
-              },
-              {
-                q: "Does it work on all websites?",
-                a: "No. Some sites are blocked, dead, slow, or protected. Those failures return structured statuses and warnings so your workflow can route them instead of breaking.",
-              },
-            ].map((item) => (
+            {faqs.map((item) => (
               <div key={item.q} className="card p-6">
                 <div className="font-light mb-2">{item.q}</div>
                 <div className="text-[#666] text-sm leading-relaxed">

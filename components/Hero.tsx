@@ -58,9 +58,9 @@ export default function Hero() {
         {/* Testimonial */}
         <div className="fade-up fade-up-delay-3 max-w-xl mx-auto mb-10 px-4 py-3 border border-[#1a1a1a] rounded text-left">
           <p className="text-sm text-[#888] italic leading-relaxed">
-        "Teams often blame Clay or Apollo when the real issue is garbage going in. A cleanup layer before enrichment makes sense — the key is making the wasted rows visible."
+"Common pattern from enrichment workflows: bad scraped inputs often get blamed on Clay, Apollo, or the enrichment step — but the real issue is garbage going in."
           </p>
-          <p className="mono text-xs text-[#444] mt-2">— r/n8n community</p>
+          {/* <p className="mono text-xs text-[#444] mt-2">— r/n8n community</p> */}
         </div>
 
         <div className="fade-up fade-up-delay-4 flex flex-col sm:flex-row items-center justify-center gap-4">
