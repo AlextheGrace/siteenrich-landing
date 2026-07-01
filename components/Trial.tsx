@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -41,13 +40,15 @@ export default function Trial() {
           </div>
 
           <h2 className="text-4xl font-light tracking-tight mb-4">
-            Run 20 scraped URLs for free
+            Run 100 CSV rows free
           </h2>
 
           <p className="text-[#666] text-sm leading-relaxed">
-            Send a small sample from a real lead list. SiteEnrich will return
-            usable / review / skip with cleaned URLs, source types, signals,
-            reasons, and warnings before rows hit enrichment or outreach.
+            Upload a small sample from a real scraped local business list.
+            SiteEnrich will return sendable / review / skip with cleaned
+            domains, emails and phones found where possible, basic MX email
+            verification, duplicate flags, reasons, and warnings before rows
+            hit enrichment or outreach.
           </p>
         </div>
 
@@ -90,7 +91,7 @@ export default function Trial() {
           </button>
 
           <p className="mono text-xs text-[#333] text-center">
-            No credit card. Includes API access for testing 20 scraped business URLs.
+            No credit card. Includes access to test one scraped local business CSV.
           </p>
 
           {status === "error" && (

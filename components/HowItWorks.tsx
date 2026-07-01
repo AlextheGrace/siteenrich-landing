@@ -1,32 +1,25 @@
-const tools = [
-  { name: "n8n", icon: "https://cdn.simpleicons.org/n8n" },
-  { name: "Zapier", icon: "https://cdn.simpleicons.org/zapier" },
-  { name: "Make", icon: "https://cdn.simpleicons.org/make" },
-  { name: "Pipedream", icon: "https://cdn.simpleicons.org/pipedream" },
-];
-
 export default function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Paste scraped URLs",
+      title: "Upload your scraped CSV",
       description:
-        "Send URLs from Google Maps, Outscraper, Apify, directories, CSVs, or n8n workflows. SiteEnrich is built for messy business URLs, not just perfect domains.",
-      code: "GET /analyze?url=business.localsearch.com",
+        "Drop in a CSV from Google Maps, Outscraper, Apify, Scrapebox, or any scraper. Map the website column and optional business name, phone, city, and state columns.",
+      code: "CSV upload → column mapping → processing job",
     },
     {
       number: "02",
-      title: "We clean and classify",
+      title: "We clean, crawl, and classify",
       description:
-        "SiteEnrich cleans tracking URLs, detects hosted subdomains, flags directory/profile URLs, checks if the site is live, and looks for basic business signals.",
-      code: "sourceType: directory_profile",
+        "SiteEnrich decodes tracking URLs, detects directory profiles, checks if each site is live, crawls contact pages, extracts emails and phones, runs basic MX verification, and deduplicates by phone, email, and domain.",
+      code: "sourceType: real_website → email found",
     },
     {
       number: "03",
-      title: "Route the row",
+      title: "Download outreach-ready CSV",
       description:
-        "Get usable / review / skip with reasons. Send good rows to Clay, Apollo, Prospeo, CRM import, or outreach. Hold back weak rows before they waste credits.",
-      code: "status: review",
+        "Every row comes back with a cleaned domain, email, phone, MX status, and a sendable / review / skip decision with reasons. Load directly into your CRM or cold email tool.",
+      code: "sendableStatus: sendable",
     },
   ];
 
@@ -38,7 +31,7 @@ export default function HowItWorks() {
             How it works
           </div>
           <h2 className="text-4xl font-light tracking-tight">
-            From messy URL to usable row.
+            From messy CSV to outreach-ready list.
           </h2>
         </div>
 
@@ -59,32 +52,6 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* Compatibility */}
-        <div className="mt-24 text-center">
-          <p className="mono text-[#444] text-xs uppercase tracking-widest mb-8">
-            Fits into
-          </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            {tools.map((tool) => (
-              <div
-                key={tool.name}
-                className="flex items-center gap-3 border border-[#222] px-6 py-3 rounded-lg hover:border-[#00ff8833] hover:bg-[#00ff8808] transition-all cursor-default group"
-              >
-                <img
-                  src={tool.icon}
-                  alt={tool.name}
-                  className="w-5 h-5 invert opacity-50 group-hover:opacity-80 transition-opacity"
-                />
-                <span className="mono text-base text-[#888] group-hover:text-white transition-colors">
-                  {tool.name}
-                </span>
-              </div>
-            ))}
-            <div className="flex items-center gap-3 border border-[#222] px-6 py-3 rounded-lg hover:border-[#00ff8833] hover:bg-[#00ff8808] transition-all cursor-default">
-              <span className="mono text-base text-[#888]">REST API</span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

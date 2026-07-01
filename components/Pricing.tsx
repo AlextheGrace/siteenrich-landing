@@ -1,203 +1,114 @@
+"use client";
+
+const plans = [
+  {
+    tier: "Free test",
+    price: "$0",
+    rows: "100 rows",
+    cta: "Run 100 rows free",
+    href: "#upload",
+    active: true,
+  },
+  {
+    tier: "Starter",
+    price: "$19",
+    per: "/mo",
+    rows: "2,500 rows/month",
+    cta: "Contact us",
+    stripeLink: `https://buy.stripe.com/test/price_1TWedN7HuMMPx5DgGM2WdiHv`,
+    priceId: "price_1TWedN7HuMMPx5DgGM2WdiHv",
+  },
+  {
+    tier: "Operator",
+    price: "$49",
+    per: "/mo",
+    rows: "10,000 rows/month",
+    cta: "Contact us",
+    priceId: "price_1ToTnV7HuMMPx5DglvniipzV",
+    featured: true,
+  },
+  {
+    tier: "Agency",
+    price: "$99",
+    per: "/mo",
+    rows: "25,000 rows/month",
+    cta: "Contact us",
+    priceId: "price_1ToTnx7HuMMPx5DgB9LYQPyl",
+  },
+];
+
+const CONTACT_EMAIL = "info@siteenrich.io";
+
 export default function Pricing() {
-  const stripeQaRunUrl = process.env.NEXT_PUBLIC_STRIPE_QA_RUN_URL || "#trial";
-
-  const plans = [
-    {
-      name: "Free Test",
-      price: "$0",
-      period: "",
-      description: "For testing SiteEnrich on a real scraped list sample.",
-      requests: "20 scraped URLs",
-      features: [
-        "Usable / review / skip",
-        "Cleaned URL",
-        "Source type classification",
-        "Needs resolver flag",
-        "Basic website signals",
-        "Reasons and warnings",
-      ],
-      cta: "Run 20 sample URLs",
-      href: "#trial",
-      featured: false,
-      external: false,
-      note: "No credit card needed",
-    },
-    {
-      name: "Starter QA Run",
-      price: "$49",
-      period: "one-time",
-      description: "For cleaning and checking one scraped CSV or Google Sheet.",
-      requests: "Up to 1,000 URLs",
-      features: [
-        "Everything in Free Test",
-        "CSV or Google Sheet output",
-        "Directory/profile URL detection",
-        "Dead or unreachable site detection",
-        "Hosted subdomain detection",
-        "Basic email/social/signal extraction",
-      ],
-      cta:
-        stripeQaRunUrl === "#trial"
-          ? "Start with 20 free rows"
-          : "Run full CSV for $49",
-      href: stripeQaRunUrl,
-      featured: true,
-      external: stripeQaRunUrl !== "#trial",
-      note:
-        stripeQaRunUrl === "#trial"
-          ? "Free sample first, then full CSV"
-          : "One-time CSV run",
-    },
-    {
-      name: "Operator",
-      price: "$199",
-      period: "/month",
-      description: "For recurring lead-list QA before enrichment or outreach.",
-      requests: "Up to 10,000 URLs/month",
-      features: [
-        "Everything in Starter QA Run",
-        "API access",
-        "n8n / Google Sheets setup help",
-        "Workflow-ready JSON",
-        "Priority beta support",
-        "Early access to batch processing",
-      ],
-      cta: "Get beta access",
-      href: "#trial",
-      featured: false,
-      external: false,
-      note: "Beta access by request",
-    },
-  ];
-
-  const faqs = [
-    {
-      q: "What does SiteEnrich do?",
-      a: "SiteEnrich turns messy scraped business URLs into usable company rows before enrichment or outreach. It cleans and classifies each URL, checks whether the site is usable, and returns usable / review / skip with reasons.",
-    },
-    {
-      q: "Is this just URL cleanup?",
-      a: "No. Basic URL cleanup removes tracking parameters. SiteEnrich also detects directory/profile URLs, hosted subdomains, dead or unreachable sites, weak sites, and useful website signals so your workflow can decide what should continue downstream.",
-    },
-    {
-      q: "Do I need an API to use it?",
-      a: "Not at first. For beta users, we can return a CSV or Google Sheet. The API is available when you want to plug SiteEnrich into n8n, Google Sheets, Make, Zapier, or your own workflow.",
-    },
-    {
-      q: "What happens in the free test?",
-      a: "You get access to run 20 scraped business URLs and see the output: cleaned URL, source type, needs resolver flag, usable / review / skip, signals, reasons, and warnings.",
-    },
-    {
-      q: "Who is this for?",
-      a: "SiteEnrich is for people working with scraped local or SMB lead lists from Google Maps, Outscraper, Apify, Leadswift, directories, CSVs, or n8n workflows before sending rows into Clay, Apollo, Prospeo, CRM import, or outreach.",
-    },
-    {
-      q: "Does it work on all websites?",
-      a: "No. Some sites are blocked, dead, slow, or protected. Those failures return structured statuses and warnings so your workflow can route them instead of breaking.",
-    },
-  ];
+  function handlePaidPlan(tier: string, priceId: string) {
+    // For now: mailto with plan context
+    // When Stripe Checkout is wired up, replace this with:
+    // window.location.href = `/api/checkout?priceId=${priceId}`
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=SiteEnrich ${tier} plan&body=Hi Alex, I'd like to sign up for the ${tier} plan ($${tier === "Starter" ? "19" : tier === "Operator" ? "49" : "99"}/mo).`;
+  }
 
   return (
-    <section id="pricing" className="py-32 px-6">
+    <section
+      id="pricing"
+      className="py-32 px-6 border-t border-[#1a1a1a]"
+    >
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <div className="mono text-[#00ff88] text-xs tracking-widest uppercase mb-4">
             Pricing
           </div>
-
           <h2 className="text-4xl font-light tracking-tight">
-            Beta pricing for scraped URL QA
+            Start free. Scale when ready.
           </h2>
-
-          <p className="text-[#666] mt-4 text-sm">
-            Start with a free 20-URL test. No credit card needed.
-          </p>
-
-          <p className="text-[#444] mt-2 text-xs mono">
-            Built for messy scraped business URLs before enrichment or outreach.
-          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           {plans.map((plan) => (
             <div
-              key={plan.name}
-              className={`card p-8 relative ${
-                plan.featured ? "border-[#00ff8833] green-glow" : ""
+              key={plan.tier}
+              className={`bg-[#111] rounded-lg p-5 flex flex-col border ${
+                plan.featured ? "border-[#00ff8833]" : "border-[#1a1a1a]"
               }`}
             >
-              {plan.featured && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 mono text-xs text-black bg-[#00ff88] px-3 py-1 rounded-full">
-                  Best first paid test
-                </div>
-              )}
-
-              <div className="mb-6">
-                <div className="mono text-[#666] text-xs uppercase tracking-widest mb-2">
-                  {plan.name}
-                </div>
-
-                <div className="flex items-end gap-1 mb-2">
-                  <span className="text-5xl font-light">{plan.price}</span>
-                  {plan.period && (
-                    <span className="text-[#666] text-sm mb-2">
-                      {plan.period}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mono text-[#00ff88] text-xs mb-3">
-                  {plan.requests}
-                </div>
-
-                <p className="text-[#666] text-sm">{plan.description}</p>
-              </div>
-
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3 text-sm">
-                    <span className="text-[#00ff88] mono mt-0.5">✓</span>
-                    <span className="text-[#888]">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href={plan.href}
-                target={plan.external ? "_blank" : undefined}
-                rel={plan.external ? "noopener noreferrer" : undefined}
-                className={`block text-center py-3.5 rounded text-sm font-medium transition-all ${
-                  plan.featured
-                    ? "bg-[#00ff88] text-black hover:bg-[#00e87a] green-glow"
-                    : "border border-[#333] text-white hover:border-[#00ff8833] hover:bg-[#00ff8808]"
-                }`}
-              >
-                {plan.cta}
-              </a>
-
-              <p className="text-center text-xs text-[#444] mt-3 mono">
-                {plan.note}
+              <p className="mono text-[11px] text-[#444] uppercase tracking-widest mb-2">
+                {plan.tier}
               </p>
+              <p className="mono text-[26px] font-semibold text-white mb-0.5">
+                {plan.price}
+                {plan.per && (
+                  <span className="text-[14px] text-[#444] font-normal">{plan.per}</span>
+                )}
+              </p>
+              <p className="text-[12px] text-[#666] mb-5">{plan.rows}</p>
+              {plan.href ? (
+                <a
+                  href={plan.href}
+                  className="mt-auto w-full text-center bg-[#00ff88] text-black px-3 py-2 rounded mono text-[12px] font-bold transition-opacity hover:opacity-85"
+                >
+                  {plan.cta}
+                </a>
+              ) : (
+                <button
+                  onClick={() => handlePaidPlan(plan.tier, plan.priceId!)}
+                  className="mt-auto w-full border border-[#222] text-[#666] px-3 py-2 rounded mono text-[12px] transition-colors hover:border-[#444] hover:text-white"
+                >
+                  {plan.cta}
+                </button>
+              )}
             </div>
           ))}
         </div>
 
-        <div className="mt-20">
-          <div className="mono text-[#444] text-xs uppercase tracking-widest mb-8 text-center">
-            Common questions
-          </div>
-
-          <div className="space-y-4">
-            {faqs.map((item) => (
-              <div key={item.q} className="card p-6">
-                <div className="font-light mb-2">{item.q}</div>
-                <div className="text-[#666] text-sm leading-relaxed">
-                  {item.a}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <p className="text-center mono text-[12px] text-[#444]">
+          Need more than 100 rows?{" "}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="text-[#00ff88] hover:opacity-80 transition-opacity"
+          >
+            Email info@siteenrich.io
+          </a>{" "}
+          and we'll process a larger file.
+        </p>
       </div>
     </section>
   );

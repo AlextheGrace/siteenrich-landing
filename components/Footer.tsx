@@ -8,7 +8,7 @@ export default function Footer() {
             SiteEnrich
           </div>
           <div className="mono text-[#333] text-xs">
-            Scraped business URL QA
+            Local lead-list cleanup
           </div>
           <div className="flex gap-6">
             <a
@@ -16,12 +16,6 @@ export default function Footer() {
               className="mono text-xs text-[#444] hover:text-[#00ff88] transition-colors"
             >
               info@siteenrich.io
-            </a>
-            <a
-              href="mailto:support@siteenrich.io"
-              className="mono text-xs text-[#444] hover:text-[#00ff88] transition-colors"
-            >
-              support@siteenrich.io
             </a>
           </div>
         </div>

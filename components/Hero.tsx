@@ -24,17 +24,20 @@ export default function Hero() {
           SiteEnrich
         </div>
         <div className="flex items-center gap-6">
-          <a href="#how-it-works" className="text-sm text-[#666] hover:text-white transition-colors">
-            How it works
+          <a href="#upload" className="text-sm text-[#666] hover:text-white transition-colors">
+            Try it free
+          </a>
+          <a href="#sample" className="text-sm text-[#666] hover:text-white transition-colors">
+            Sample output
           </a>
           <a href="#pricing" className="text-sm text-[#666] hover:text-white transition-colors">
             Pricing
           </a>
           <a
-            href="#trial"
+            href="#upload"
             className="mono text-xs px-4 py-2 border border-[#00ff88] text-[#00ff88] rounded hover:bg-[#00ff8811] transition-all"
           >
-            Free Trial
+            Run 100 rows free
           </a>
         </div>
       </nav>
@@ -42,52 +45,79 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <div className="fade-up fade-up-delay-1 mono text-[#00ff88] text-xs tracking-widest uppercase mb-6">
-      Messy scraped URLs → usable company rows
+          Local lead-list cleanup
         </div>
 
         <h1 className="fade-up fade-up-delay-2 text-5xl md:text-7xl font-light tracking-tight mb-6 leading-[1.1]">
-          Turn messy scraped business URLs into
+          Upload your Google Maps lead list.
           <br />
-          <span className="text-[#00ff88]">usable company rows</span>
+          <span className="text-[#00ff88]">Download an outreach-ready CSV.</span>
         </h1>
 
         <p className="fade-up fade-up-delay-3 text-lg text-[#666] max-w-xl mx-auto mb-6 leading-relaxed font-light">
-          Paste URLs from Google Maps, Outscraper, Apify, directories, or CSVs. SiteEnrich cleans and classifies each business URL, checks if the site is usable, and returns usable / review / skip with reasons before rows hit Clay, Apollo, or outreach.
+          SiteEnrich cleans messy Google Maps, Outscraper, Apify, and scraped
+          local business CSVs. It finds emails and phones where possible, flags
+          duplicates and junk rows, runs basic MX email verification, and returns{" "}
+          <span className="text-[#888]">sendable / review / skip</span> with reasons.
         </p>
 
-        {/* Testimonial */}
+        {/* Pain statement */}
         <div className="fade-up fade-up-delay-3 max-w-xl mx-auto mb-10 px-4 py-3 border border-[#1a1a1a] rounded text-left">
-          <p className="text-sm text-[#888] italic leading-relaxed">
-"Common pattern from enrichment workflows: bad scraped inputs often get blamed on Clay, Apollo, or the enrichment step — but the real issue is garbage going in."
+          <p className="text-sm text-[#888] leading-relaxed">
+            Bad scraped rows waste credits, hurt deliverability, and create hours
+            of manual cleanup before outreach can even start.
           </p>
-          {/* <p className="mono text-xs text-[#444] mt-2">— r/n8n community</p> */}
         </div>
 
         <div className="fade-up fade-up-delay-4 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#trial"
+            href="#upload"
             className="px-8 py-3.5 bg-[#00ff88] text-black font-medium rounded hover:bg-[#00e87a] transition-all green-glow text-sm"
           >
-          Run 20 sample URLs
+            Run 100 rows free
           </a>
           <a
-            href="#demo"
+            href="#sample"
             className="px-8 py-3.5 border border-[#1a1a1a] text-[#666] rounded hover:border-[#333] hover:text-white transition-all text-sm"
           >
-            Try a messy URL
+            See sample output
           </a>
         </div>
 
-        {/* Quick example */}
-        <div className="fade-up fade-up-delay-4 mt-16 mono text-xs text-left max-w-lg mx-auto card p-4">
-          <div className="text-[#444] mb-2">$ curl api.siteenrich.io/analyze?url=messy-business-url.com \</div>
-          <div className="text-[#444] mb-3 pl-4">-H "X-API-Key: your-key"</div>
-          <div className="text-[#00ff88]">✓ 200 OK — 387ms</div>
+        {/* Flow strip */}
+        <div className="fade-up fade-up-delay-4 mt-14 flex flex-wrap items-center justify-center gap-0">
+          {[
+            { label: "Upload CSV", highlight: false },
+            { label: "Clean domains", highlight: false },
+            { label: "Detect junk", highlight: false },
+            { label: "Find emails + phones", highlight: true },
+            { label: "MX verify", highlight: false },
+            { label: "Dedupe", highlight: false },
+            { label: "Download CSV", highlight: true },
+          ].map((step, i, arr) => (
+            <span key={i} className="flex items-center">
+              <span
+                className={`mono text-[10px] px-2.5 py-1 rounded-sm border whitespace-nowrap ${
+                  step.highlight
+                    ? "text-[#00ff88] border-[#00ff8822] bg-[#00ff8808]"
+                    : "text-[#444] border-[#1a1a1a] bg-[#111]"
+                }`}
+              >
+                {step.label}
+              </span>
+              {i < arr.length - 1 && (
+                <span className="text-[#333] text-xs px-1">→</span>
+              )}
+            </span>
+          ))}
         </div>
 
         {/* Scroll prompt */}
-        <a href="#demo" className="fade-up fade-up-delay-4 mt-8 flex flex-col items-center gap-2 text-[#444] hover:text-[#00ff88] transition-colors group">
-          <span className="mono text-xs">Or try it live below — no signup needed</span>
+        <a
+          href="#upload"
+          className="fade-up fade-up-delay-4 mt-10 flex flex-col items-center gap-2 text-[#444] hover:text-[#00ff88] transition-colors group"
+        >
+          <span className="mono text-xs">Upload a CSV below — 100 rows free, no signup needed</span>
           <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
