@@ -4,6 +4,11 @@ import { useState, useRef, useCallback } from "react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.siteenrich.io";
 
+const URL_COLUMN_ALIASES = [
+  "website", "url", "site", "domain", "business_url", "company_website",
+  "homepage", "link", "inputurl", "businesswebsite", "web"
+];
+
 type Step = "upload" | "config" | "processing" | "results";
 
 interface JobStatus {
@@ -43,6 +48,7 @@ export default function CsvUpload() {
   const [progress, setProgress] = useState(0);
   const [ticker, setTicker] = useState<TickerLine[]>([]);
   const [dragging, setDragging] = useState(false);
+  const [urlOnlyMode, setUrlOnlyMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -54,9 +60,13 @@ export default function CsvUpload() {
     }, 50);
   }, []);
 
+  function isUrlAlias(header: string) {
+    return URL_COLUMN_ALIASES.includes(header.toLowerCase().replace(/[\s-]/g, "_"));
+  }
+
   function autoDetect(hdrs: string[], patterns: string[]) {
     for (const p of patterns) {
-      const f = hdrs.find(h => h.toLowerCase().includes(p));
+      const f = hdrs.find(h => h.toLowerCase().replace(/[\s-]/g, "_").includes(p));
       if (f) return f;
     }
     return "";
@@ -73,14 +83,28 @@ export default function CsvUpload() {
       setHeaders(hdrs);
       setRowCount(Math.min(count, 100));
 
-      setColUrl(autoDetect(hdrs, ["website", "url", "web", "site", "domain", "link"]));
+      const detectedUrl = autoDetect(hdrs, ["website", "url", "site", "domain", "business_url", "company_website", "homepage", "link"]);
+      setColUrl(detectedUrl);
       setColName(autoDetect(hdrs, ["name", "business", "company", "title"]));
       setColPhone(autoDetect(hdrs, ["phone", "tel", "mobile"]));
       setColCity(autoDetect(hdrs, ["city", "location", "area"]));
       setColState(autoDetect(hdrs, ["state", "region", "province"]));
       setColSource(autoDetect(hdrs, ["source", "origin"]));
 
-      setStep("config");
+      // URL-only mode: single column that looks like a URL column
+      // OR all non-URL columns are empty/missing — skip mapping screen
+      const isUrlOnly = hdrs.length === 1 && detectedUrl !== "";
+      setUrlOnlyMode(isUrlOnly);
+
+      if (isUrlOnly && detectedUrl) {
+        // Skip config screen — go straight to processing
+        setStep("processing");
+        setTicker([]);
+        setProgress(0);
+        submitJob(f, detectedUrl, "", "", "", "", "", false);
+      } else {
+        setStep("config");
+      }
     };
     reader.readAsText(f);
   }
@@ -92,21 +116,25 @@ export default function CsvUpload() {
     if (f?.name.endsWith(".csv")) parseFile(f);
   }
 
-  async function startProcessing() {
-    if (!file || !colUrl) return;
-    setStep("processing");
-    setTicker([]);
-    setProgress(0);
-
+  async function submitJob(
+    csvFile: File,
+    urlColumn: string,
+    nameColumn: string,
+    phoneColumn: string,
+    cityColumn: string,
+    stateColumn: string,
+    sourceColumn: string,
+    fast: boolean
+  ) {
     const form = new FormData();
-    form.append("file", file);
-    form.append("websiteColumn", colUrl);
-    if (colName) form.append("businessNameColumn", colName);
-    if (colPhone) form.append("phoneColumn", colPhone);
-    if (colCity) form.append("cityColumn", colCity);
-    if (colState) form.append("stateColumn", colState);
-    if (colSource) form.append("sourceColumn", colSource);
-    if (fastMode) form.append("fastMode", "true");
+    form.append("file", csvFile);
+    form.append("websiteColumn", urlColumn);
+    if (nameColumn) form.append("businessNameColumn", nameColumn);
+    if (phoneColumn) form.append("phoneColumn", phoneColumn);
+    if (cityColumn) form.append("cityColumn", cityColumn);
+    if (stateColumn) form.append("stateColumn", stateColumn);
+    if (sourceColumn) form.append("sourceColumn", sourceColumn);
+    if (fast) form.append("fastMode", "true");
 
     try {
       const resp = await fetch(`${API_BASE}/api/csv-jobs`, {
@@ -120,11 +148,19 @@ export default function CsvUpload() {
       }
       setJobId(data.jobId);
       addTick(`Job created — ${data.totalRows} rows queued`, "info");
-      if (data.truncated) addTick(`File capped at 100 rows (free tier)`, "warn");
+      if (data.truncated) addTick(`Capped at 100 rows (free tier)`, "warn");
       startPolling(data.jobId, data.totalRows);
     } catch {
       addTick("Could not reach API — check your connection", "warn");
     }
+  }
+
+  async function startProcessing() {
+    if (!file || !colUrl) return;
+    setStep("processing");
+    setTicker([]);
+    setProgress(0);
+    await submitJob(file, colUrl, colName, colPhone, colCity, colState, colSource, fastMode);
   }
 
   function startPolling(id: string, total: number) {
@@ -177,6 +213,7 @@ export default function CsvUpload() {
     setJobStatus(null);
     setProgress(0);
     setTicker([]);
+    setUrlOnlyMode(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
@@ -184,23 +221,23 @@ export default function CsvUpload() {
     "w-full bg-[#1c1c1a] border border-[#323230] text-[#e8e6e0] px-3 py-2 rounded text-[12px] font-mono outline-none focus:border-[#00ff88] appearance-none cursor-pointer";
 
   return (
-    <section id="upload" className="px-6 md:px-10 py-16 max-w-4xl mx-auto border-t border-[#272724]">
-      <p className="font-mono text-[11px] text-[#4a4844] tracking-widest uppercase mb-5">
+    <section id="upload" className="px-6 md:px-10 py-16 max-w-4xl mx-auto border-t border-[#1a1a1a]">
+      <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-5">
         CSV processor — free test
       </p>
 
       {/* STEP 1: UPLOAD */}
       {step === "upload" && (
-        <div className="bg-[#141413] border border-[#272724] rounded-lg p-8">
+        <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-8">
           <div
             onDragOver={e => { e.preventDefault(); setDragging(true); }}
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`border border-dashed rounded-lg py-16 px-6 text-center cursor-pointer transition-colors ${
+            className={`border border-dashed rounded-lg py-14 px-6 text-center cursor-pointer transition-colors ${
               dragging
-                ? "border-[#00ff88] bg-[#0d2016]"
-                : "border-[#323230] hover:border-[#4a4844] hover:bg-[#1c1c1a]"
+                ? "border-[#00ff88] bg-[#00ff8808]"
+                : "border-[#222] hover:border-[#333] hover:bg-[#0f0f0f]"
             }`}
           >
             <input
@@ -210,26 +247,36 @@ export default function CsvUpload() {
               className="hidden"
               onChange={e => { if (e.target.files?.[0]) parseFile(e.target.files[0]); }}
             />
-            <div className="text-4xl mb-4 opacity-30">⬆</div>
+            <div className="text-3xl mb-4 opacity-25">⬆</div>
             <p className="text-[15px] text-[#e8e6e0] font-medium mb-2">
               Drop a CSV or click to browse
             </p>
-            <p className="text-[12px] text-[#4a4844]">
+            <p className="text-[12px] text-[#444] mb-6">
               Google Maps · Outscraper · Apify · Scrapebox — any scraped local business CSV
+            </p>
+            <div className="font-mono text-[11px] text-[#333] text-left inline-block border border-[#1a1a1a] rounded px-4 py-3 bg-[#0a0a0a]">
+              <div className="text-[#444] mb-1">website</div>
+              <div>https://business1.com</div>
+              <div>https://business2.com</div>
+              <div>https://business3.com</div>
+            </div>
+            <p className="text-[11px] text-[#333] mt-4 font-mono">
+              URL-only CSVs are detected automatically — no column mapping needed
             </p>
           </div>
         </div>
       )}
 
-      {/* STEP 2: CONFIG */}
+      {/* STEP 2: CONFIG — only shown for multi-column CSVs */}
       {step === "config" && (
-        <div className="bg-[#141413] border border-[#272724] rounded-lg p-8">
-          <p className="font-mono text-[11px] text-[#4a4844] tracking-widest uppercase mb-4">
+        <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-8">
+          <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-4">
             Map columns
           </p>
-          <div className="font-mono text-[11px] text-[#8a8880] bg-[#1c1c1a] border border-[#272724] rounded px-3 py-2 mb-5">
+          <div className="font-mono text-[11px] text-[#666] bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2 mb-5">
             <span className="text-[#00ff88] font-medium">{rowCount}</span> rows loaded
             {rowCount >= 100 ? " — free test processes the first 100 rows" : ""}
+            {" · "}If your CSV only contains website URLs, SiteEnrich will detect the column automatically.
           </div>
           <div className="grid grid-cols-2 gap-3 mb-5">
             {[
@@ -241,12 +288,12 @@ export default function CsvUpload() {
               { label: "Source", req: false, val: colSource, set: setColSource },
             ].map(({ label, req, val, set }) => (
               <div key={label} className="flex flex-col gap-1.5">
-                <label className="font-mono text-[11px] text-[#8a8880]">
+                <label className="font-mono text-[11px] text-[#666]">
                   {label}{" "}
                   {req ? (
                     <span className="text-[#00ff88]">*</span>
                   ) : (
-                    <span className="text-[#4a4844] text-[10px]">optional</span>
+                    <span className="text-[#333] text-[10px]">optional</span>
                   )}
                 </label>
                 <select className={selectClass} value={val} onChange={e => set(e.target.value)}>
@@ -258,7 +305,7 @@ export default function CsvUpload() {
               </div>
             ))}
           </div>
-          <label className="flex items-center gap-2 text-[12px] text-[#8a8880] cursor-pointer mb-5">
+          <label className="flex items-center gap-2 text-[12px] text-[#666] cursor-pointer mb-5">
             <input
               type="checkbox"
               checked={fastMode}
@@ -274,11 +321,11 @@ export default function CsvUpload() {
               disabled={!colUrl}
               className="bg-[#00ff88] text-[#0a1a0e] px-5 py-2.5 rounded font-mono text-[13px] font-bold transition-opacity hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Process CSV
+              Process {rowCount} rows free
             </button>
             <button
               onClick={() => setStep("upload")}
-              className="border border-[#323230] text-[#8a8880] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#8a8880] hover:text-[#e8e6e0]"
+              className="border border-[#222] text-[#666] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#444] hover:text-[#e8e6e0]"
             >
               ← Back
             </button>
@@ -288,12 +335,13 @@ export default function CsvUpload() {
 
       {/* STEP 3: PROCESSING */}
       {step === "processing" && (
-        <div className="bg-[#141413] border border-[#272724] rounded-lg p-8">
-          <p className="font-mono text-[11px] text-[#4a4844] tracking-widest uppercase mb-4">
+        <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-8">
+          <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-4">
             Processing{" "}
             <span className="text-[#e8e6e0]">{jobStatus?.totalRows ?? rowCount} rows</span>
+            {urlOnlyMode && <span className="text-[#444] ml-2">— URL-only mode</span>}
           </p>
-          <div className="bg-[#1c1c1a] rounded-full h-[3px] overflow-hidden mb-4">
+          <div className="bg-[#0a0a0a] rounded-full h-[3px] overflow-hidden mb-4">
             <div
               className="h-full bg-[#00ff88] transition-all duration-500 rounded-full"
               style={{ width: `${progress}%` }}
@@ -306,27 +354,24 @@ export default function CsvUpload() {
               { val: jobStatus?.phonesFound ?? 0, label: "Phones" },
               { val: jobStatus?.sendableRows ?? 0, label: "Sendable" },
             ].map(({ val, label }) => (
-              <div key={label} className="bg-[#1c1c1a] border border-[#272724] rounded px-3 py-2.5">
+              <div key={label} className="bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5">
                 <div className="font-mono text-[18px] font-semibold text-[#e8e6e0]">{val}</div>
-                <div className="font-mono text-[9px] text-[#4a4844] uppercase tracking-widest mt-0.5">{label}</div>
+                <div className="font-mono text-[9px] text-[#444] uppercase tracking-widest mt-0.5">{label}</div>
               </div>
             ))}
           </div>
           <div
             ref={tickerRef}
-            className="font-mono text-[11px] bg-[#1c1c1a] border border-[#272724] rounded px-3 py-2.5 h-28 overflow-y-auto text-[#4a4844]"
+            className="font-mono text-[11px] bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5 h-28 overflow-y-auto text-[#444]"
           >
             {ticker.map((t, i) => (
               <div
                 key={i}
                 className={`mb-0.5 leading-relaxed ${
-                  t.type === "ok"
-                    ? "text-[#00ff88]"
-                    : t.type === "warn"
-                    ? "text-[#f5c842]"
-                    : t.type === "skip"
-                    ? "text-[#4a4844]"
-                    : "text-[#8a8880]"
+                  t.type === "ok" ? "text-[#00ff88]"
+                  : t.type === "warn" ? "text-[#f5c842]"
+                  : t.type === "skip" ? "text-[#333]"
+                  : "text-[#666]"
                 }`}
               >
                 {t.msg}
@@ -338,8 +383,8 @@ export default function CsvUpload() {
 
       {/* STEP 4: RESULTS */}
       {step === "results" && jobStatus && (
-        <div className="bg-[#141413] border border-[#272724] rounded-lg p-8">
-          <p className="font-mono text-[11px] text-[#4a4844] tracking-widest uppercase mb-5">
+        <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-8">
+          <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-5">
             Results
           </p>
           <div className="grid grid-cols-4 gap-2 mb-5">
@@ -353,11 +398,11 @@ export default function CsvUpload() {
               { val: jobStatus.phonesFound, label: "Phones", color: "" },
               { val: jobStatus.duplicateRows, label: "Duplicates", color: "" },
             ].map(({ val, label, color }) => (
-              <div key={label} className="bg-[#1c1c1a] border border-[#272724] rounded px-3 py-2.5">
+              <div key={label} className="bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5">
                 <div className={`font-mono text-[22px] font-semibold leading-none mb-1 ${color || "text-[#e8e6e0]"}`}>
                   {val}
                 </div>
-                <div className="font-mono text-[9px] text-[#4a4844] uppercase tracking-widest">{label}</div>
+                <div className="font-mono text-[9px] text-[#444] uppercase tracking-widest">{label}</div>
               </div>
             ))}
           </div>
@@ -370,7 +415,7 @@ export default function CsvUpload() {
             </button>
             <button
               onClick={restart}
-              className="border border-[#323230] text-[#8a8880] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#8a8880] hover:text-[#e8e6e0]"
+              className="border border-[#222] text-[#666] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#444] hover:text-[#e8e6e0]"
             >
               Process another file
             </button>
