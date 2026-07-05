@@ -49,16 +49,15 @@ export default function Hero() {
         </div>
 
         <h1 className="fade-up fade-up-delay-2 text-5xl md:text-7xl font-light tracking-tight mb-6 leading-[1.1]">
-          Upload your Google Maps lead list.
+          Turn messy Google Maps CSVs into
           <br />
-          <span className="text-[#00ff88]">Download an outreach-ready CSV.</span>
+          <span className="text-[#00ff88]">outreach-ready lead lists.</span>
         </h1>
 
         <p className="fade-up fade-up-delay-3 text-lg text-[#666] max-w-xl mx-auto mb-6 leading-relaxed font-light">
-          SiteEnrich cleans messy Google Maps, Outscraper, Apify, and scraped
-          local business CSVs. It finds emails and phones where possible, flags
-          duplicates and junk rows, runs basic MX email verification, and returns{" "}
-          <span className="text-[#888]">sendable / review / skip</span> with reasons.
+          Clean domains, remove junk rows, detect duplicates, find emails and
+          phones where possible, and classify every row before importing into
+          Instantly, Smartlead, Clay, or your CRM.
         </p>
 
         {/* Pain statement */}
@@ -77,10 +76,11 @@ export default function Hero() {
             Run 100 rows free
           </a>
           <a
-            href="#sample"
+            href="/sample-output.csv"
+            download
             className="px-8 py-3.5 border border-[#1a1a1a] text-[#666] rounded hover:border-[#333] hover:text-white transition-all text-sm"
           >
-            See sample output
+            Download sample output
           </a>
         </div>
 
@@ -91,7 +91,7 @@ export default function Hero() {
             { label: "Clean domains", highlight: false },
             { label: "Detect junk", highlight: false },
             { label: "Find emails + phones", highlight: true },
-            { label: "MX verify", highlight: false },
+            { label: "Email check", highlight: false },
             { label: "Dedupe", highlight: false },
             { label: "Download CSV", highlight: true },
           ].map((step, i, arr) => (
@@ -117,7 +117,7 @@ export default function Hero() {
           href="#upload"
           className="fade-up fade-up-delay-4 mt-10 flex flex-col items-center gap-2 text-[#444] hover:text-[#00ff88] transition-colors group"
         >
-          <span className="mono text-xs">Upload a CSV below — 100 rows free, no signup needed</span>
+          <span className="mono text-xs">Upload a CSV below — 100 rows free, no signup, instant output</span>
           <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
