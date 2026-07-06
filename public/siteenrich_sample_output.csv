@@ -1,0 +1,8 @@
+businessName,cleanedDomain,email,phone,emailStatus,sendableStatus,reason
+Elegant Kitchen & Bath,elegantkitchenbath.com,info@elegantkitchenbath.com,(703) 555-0142,High,Sendable,Personal email found on contact page; domain matches website
+Summit Remodeling Knoxville,summitremodelingknoxville.com,contact@summitremodeling.com,(865) 555-0198,High,Sendable,Email found on homepage; domain matches website
+Green Home Installations,greenhomeinstallations.org,info@greenhouse.org,(201) 555-0167,Medium,Review,Email domain differs from website domain
+Modern Bath NJ,callmodernbath.com,,(973) 555-0112,Missing,Review,Website live; phone found; no email found
+JB Renovations,jbrenovations.weebly.com,,,Missing,Review,Hosted subdomain; weak signals
+Geyer Construction Inc,geyerconstructioninc.localsearch.com,,,Missing,Skip,Directory profile URL; no real website detected
+Gateway Construction Co,gatewayconstructionco.com,,(404) 555-0134,Missing,Skip,Duplicate phone detected

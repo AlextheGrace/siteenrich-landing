@@ -76,7 +76,7 @@ export default function Hero() {
             Run 100 rows free
           </a>
           <a
-            href="/sample-output.csv"
+            href="/siteenrich_sample_output.csv"
             download
             className="px-8 py-3.5 border border-[#1a1a1a] text-[#666] rounded hover:border-[#333] hover:text-white transition-all text-sm"
           >
