@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
+import * as XLSX from "xlsx";
+import ResultCta from "./ResultCta";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.siteenrich.io";
 
@@ -72,48 +74,82 @@ export default function CsvUpload() {
     return "";
   }
 
-  function parseFile(f: File) {
-    setFile(f);
+  function isExcelFile(f: File) {
+    return /\.(xlsx|xls)$/i.test(f.name);
+  }
+
+  // Convert an Excel file to a CSV File object so the rest of the pipeline
+  // (upload, mapping, backend) stays identical. Returns null on failure.
+  async function excelToCsvFile(f: File): Promise<File | null> {
+    try {
+      const buffer = await f.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const firstSheetName = workbook.SheetNames[0];
+      if (!firstSheetName) return null;
+      const sheet = workbook.Sheets[firstSheetName];
+      const csvString = XLSX.utils.sheet_to_csv(sheet);
+      const csvName = f.name.replace(/\.(xlsx|xls)$/i, ".csv");
+      return new File([csvString], csvName, { type: "text/csv" });
+    } catch {
+      return null;
+    }
+  }
+
+  function processHeaders(csvText: string, csvFile: File) {
+    const lines = csvText.split("\n").filter(l => l.trim());
+    const hdrs = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
+    const count = lines.length - 1;
+    setHeaders(hdrs);
+    setRowCount(Math.min(count, 100));
+
+    const detectedUrl = autoDetect(hdrs, ["website", "url", "site", "domain", "business_url", "company_website", "homepage", "link"]);
+    setColUrl(detectedUrl);
+    setColName(autoDetect(hdrs, ["name", "business", "company", "title"]));
+    setColPhone(autoDetect(hdrs, ["phone", "tel", "mobile"]));
+    setColCity(autoDetect(hdrs, ["city", "location", "area"]));
+    setColState(autoDetect(hdrs, ["state", "region", "province"]));
+    setColSource(autoDetect(hdrs, ["source", "origin"]));
+
+    const isUrlOnly = hdrs.length === 1 && detectedUrl !== "";
+    setUrlOnlyMode(isUrlOnly);
+
+    if (isUrlOnly && detectedUrl) {
+      setStep("processing");
+      setTicker([]);
+      setProgress(0);
+      submitJob(csvFile, detectedUrl, "", "", "", "", "", false);
+    } else {
+      setStep("config");
+    }
+  }
+
+  async function parseFile(f: File) {
+    // If Excel, convert to CSV first
+    let workingFile = f;
+    if (isExcelFile(f)) {
+      const converted = await excelToCsvFile(f);
+      if (!converted) {
+        alert("Could not read that Excel file. Try saving it as CSV and uploading again.");
+        return;
+      }
+      workingFile = converted;
+    }
+
+    setFile(workingFile);
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = (e.target?.result as string) || "";
-      const lines = text.split("\n").filter(l => l.trim());
-      const hdrs = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
-      const count = lines.length - 1;
-      setHeaders(hdrs);
-      setRowCount(Math.min(count, 100));
-
-      const detectedUrl = autoDetect(hdrs, ["website", "url", "site", "domain", "business_url", "company_website", "homepage", "link"]);
-      setColUrl(detectedUrl);
-      setColName(autoDetect(hdrs, ["name", "business", "company", "title"]));
-      setColPhone(autoDetect(hdrs, ["phone", "tel", "mobile"]));
-      setColCity(autoDetect(hdrs, ["city", "location", "area"]));
-      setColState(autoDetect(hdrs, ["state", "region", "province"]));
-      setColSource(autoDetect(hdrs, ["source", "origin"]));
-
-      // URL-only mode: single column that looks like a URL column
-      // OR all non-URL columns are empty/missing — skip mapping screen
-      const isUrlOnly = hdrs.length === 1 && detectedUrl !== "";
-      setUrlOnlyMode(isUrlOnly);
-
-      if (isUrlOnly && detectedUrl) {
-        // Skip config screen — go straight to processing
-        setStep("processing");
-        setTicker([]);
-        setProgress(0);
-        submitJob(f, detectedUrl, "", "", "", "", "", false);
-      } else {
-        setStep("config");
-      }
+      processHeaders(text, workingFile);
     };
-    reader.readAsText(f);
+    reader.readAsText(workingFile);
   }
 
   function handleDrop(e: React.DragEvent) {
     e.preventDefault();
     setDragging(false);
     const f = e.dataTransfer.files[0];
-    if (f?.name.endsWith(".csv")) parseFile(f);
+    if (f && /\.(csv|xlsx|xls)$/i.test(f.name)) parseFile(f);
   }
 
   async function submitJob(
@@ -223,7 +259,7 @@ export default function CsvUpload() {
   return (
     <section id="upload" className="px-6 md:px-10 py-16 max-w-4xl mx-auto border-t border-[#1a1a1a]">
       <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-5">
-        CSV processor — free test
+        Spreadsheet processor — free test
       </p>
 
       {/* STEP 1: UPLOAD */}
@@ -243,16 +279,19 @@ export default function CsvUpload() {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".csv"
+              accept=".csv,.xlsx,.xls"
               className="hidden"
               onChange={e => { if (e.target.files?.[0]) parseFile(e.target.files[0]); }}
             />
             <div className="text-3xl mb-4 opacity-25">⬆</div>
             <p className="text-[15px] text-[#e8e6e0] font-medium mb-2">
-              Drop a CSV or click to browse
+              Drop your spreadsheet or click to browse
             </p>
-            <p className="text-[12px] text-[#444] mb-6">
-              Google Maps · Outscraper · Apify · Scrapebox — any scraped local business CSV
+            <p className="text-[12px] text-[#444] mb-3">
+              Supports Google Sheets exports, Excel (.xlsx, .xls), and CSV
+            </p>
+            <p className="text-[11px] text-[#333] mb-6">
+              Google Maps · Outscraper · Apify · Scrapebox · LocalProspects exports
             </p>
             <div className="font-mono text-[11px] text-[#333] text-left inline-block border border-[#1a1a1a] rounded px-4 py-3 bg-[#0a0a0a]">
               <div className="text-[#444] mb-1">website</div>
@@ -261,7 +300,7 @@ export default function CsvUpload() {
               <div>https://business3.com</div>
             </div>
             <p className="text-[11px] text-[#333] mt-4 font-mono">
-              URL-only CSVs are detected automatically — no column mapping needed
+              URL-only spreadsheets are detected automatically — no column mapping needed
             </p>
           </div>
         </div>
@@ -420,6 +459,19 @@ export default function CsvUpload() {
               Process another file
             </button>
           </div>
+
+          <ResultCta
+            jobId={jobId!}
+            fileName={file?.name}
+            processed={jobStatus.processedRows}
+            sendable={jobStatus.sendableRows}
+            review={jobStatus.reviewRows}
+            skipped={jobStatus.skippedRows}
+            emailsFound={jobStatus.emailsFound}
+            mxVerified={jobStatus.mxValidEmails}
+            phonesFound={jobStatus.phonesFound}
+            duplicates={jobStatus.duplicateRows}
+          />
         </div>
       )}
     </section>

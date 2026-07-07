@@ -76,7 +76,7 @@ export default function Hero() {
             Run 100 rows free
           </a>
           <a
-            href="/siteenrich_sample_output.csv"
+            href="/sample-output.csv"
             download
             className="px-8 py-3.5 border border-[#1a1a1a] text-[#666] rounded hover:border-[#333] hover:text-white transition-all text-sm"
           >
@@ -87,13 +87,13 @@ export default function Hero() {
         {/* Flow strip */}
         <div className="fade-up fade-up-delay-4 mt-14 flex flex-wrap items-center justify-center gap-0">
           {[
-            { label: "Upload CSV", highlight: false },
+            { label: "Upload sheet", highlight: false },
             { label: "Clean domains", highlight: false },
             { label: "Detect junk", highlight: false },
             { label: "Find emails + phones", highlight: true },
             { label: "Email check", highlight: false },
             { label: "Dedupe", highlight: false },
-            { label: "Download CSV", highlight: true },
+            { label: "Download sheet", highlight: true },
           ].map((step, i, arr) => (
             <span key={i} className="flex items-center">
               <span
@@ -117,7 +117,7 @@ export default function Hero() {
           href="#upload"
           className="fade-up fade-up-delay-4 mt-10 flex flex-col items-center gap-2 text-[#444] hover:text-[#00ff88] transition-colors group"
         >
-          <span className="mono text-xs">Upload a CSV below — 100 rows free, no signup, instant output</span>
+          <span className="mono text-xs">Upload a spreadsheet below — 100 rows free, no signup, instant output</span>
           <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
