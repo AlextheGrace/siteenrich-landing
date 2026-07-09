@@ -8,11 +8,15 @@ import BuiltFor from "@/components/BuiltFor";
 import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import Footer from "@/components/Footer";
+import WhatYouGetBack from "@/components/WhatYouGetBack";
+
+
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
       <Hero />
+      <WhatYouGetBack />
       <BeforeAfter />
       <PrivacyNote />
       <CsvUpload />
