@@ -2,9 +2,9 @@ export default function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Upload your scraped CSV",
+      title: "Upload your scraped spreadsheet",
       description:
-        "Drop in a CSV from Google Maps, Outscraper, Apify, Scrapebox, or any scraper. Map the website column and optional business name, phone, city, and state columns.",
+        "Drop in a CSV, Excel file, or Google Sheets export from Google Maps, Outscraper, Apify, Apollo, Clay, Scrapebox, or any scraper. Map the website column and optional business name, phone, city, and state columns.",
       code: "CSV upload → column mapping → processing job",
     },
     {
@@ -19,7 +19,7 @@ export default function HowItWorks() {
       title: "Download outreach-ready CSV",
       description:
         "Every row comes back with a cleaned domain, email, phone, MX status, and a sendable / review / skip decision with reasons. Load directly into your CRM or cold email tool.",
-      code: "sendableStatus: sendable",
+      code: "recommendation: send",
     },
   ];
 
@@ -31,7 +31,7 @@ export default function HowItWorks() {
             How it works
           </div>
           <h2 className="text-4xl font-light tracking-tight">
-            From messy CSV to outreach-ready list.
+            From messy spreadsheet to outreach-ready list.
           </h2>
         </div>
 

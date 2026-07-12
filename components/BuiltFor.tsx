@@ -2,7 +2,7 @@ export default function BuiltFor() {
   const audiences = [
     {
       title: "Cold email agencies",
-      desc: "Clean client lead lists before they hit your sequences. Fewer bounces, better deliverability.",
+      desc: "Clean client lead lists before they hit your sequences. Catch obvious bad rows before they reach your outreach tool.",
     },
     {
       title: "Lead generation agencies",
@@ -10,7 +10,7 @@ export default function BuiltFor() {
     },
     {
       title: "Appointment setters",
-      desc: "Know which rows are worth calling before you dial. Skip bad websites and dead numbers.",
+      desc: "See which rows have usable websites, phones, and contact signals before outreach.",
     },
     {
       title: "SEO agencies",
@@ -26,7 +26,7 @@ export default function BuiltFor() {
     },
     {
       title: "n8n / Make workflows",
-      desc: "Slot SiteEnrich into your automation. POST a CSV, poll for results, download the clean output.",
+      desc: "API and workflow support coming soon — automate the full clean-and-download pipeline.",
     },
   ];
 

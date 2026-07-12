@@ -6,7 +6,7 @@ export default function SampleOutput() {
       email: "info@elegantkitchenbath.com",
       phone: "(703) 555-0142",
       emailStatus: "mx_valid",
-      sendable: "sendable",
+      sendable: "send",
       reason: "Email found on contact page, basic MX verification passed",
     },
     {
@@ -15,7 +15,7 @@ export default function SampleOutput() {
       email: "contact@summitremodeling.com",
       phone: "(865) 555-0198",
       emailStatus: "mx_valid",
-      sendable: "sendable",
+      sendable: "send",
       reason: "Email found on homepage, basic MX verification passed",
     },
     {
@@ -66,7 +66,7 @@ export default function SampleOutput() {
   ];
 
   function tagClass(val: string) {
-    if (val === "sendable" || val === "mx_valid")
+    if (val === "send" || val === "sendable" || val === "mx_valid")
       return "bg-[#0d2016] text-[#00ff88]";
     if (val === "review") return "bg-[#1e1800] text-[#f5c842]";
     if (val === "skip") return "bg-[#1e0a0a] text-[#ff6b6b]";
@@ -85,7 +85,7 @@ export default function SampleOutput() {
         <table className="w-full border-collapse font-mono text-[11px] whitespace-nowrap">
           <thead>
             <tr className="bg-[#1c1c1a]">
-              {["businessName","cleanedDomain","email","phone","emailStatus","sendableStatus","reason"].map(h => (
+              {["businessName","cleanedDomain","email","phone","emailStatus","recommendation","reason"].map(h => (
                 <th key={h} className="text-left text-[#4a4844] px-3 py-2 border-b border-[#272724] text-[10px] uppercase tracking-wider font-medium">
                   {h}
                 </th>
@@ -116,7 +116,7 @@ export default function SampleOutput() {
         </table>
       </div>
       <p className="font-mono text-[11px] text-[#4a4844] leading-relaxed">
-        Output columns: businessName · inputUrl · cleanedUrl · cleanedDomain · finalUrl · sourceType · websiteStatus · email · emailStatus · emailVerificationMethod · emailType · emailSourcePage · phone · phoneSourcePage · sendableStatus · reason · warnings · duplicateOf · duplicateReason
+        Output columns: businessName · inputUrl · cleanedDomain · websiteStatus · email · emailStatus · phone · recommendation · reason · warnings · duplicateOf · duplicateReason
       </p>
     </section>
   );

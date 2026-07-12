@@ -25,7 +25,7 @@ export default function Hero() {
         </div>
         <div className="flex items-center gap-6">
           <a href="#upload" className="text-sm text-[#666] hover:text-white transition-colors">
-            Try it free
+            Free test
           </a>
           <a href="#sample" className="text-sm text-[#666] hover:text-white transition-colors">
             Sample output
@@ -45,26 +45,27 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto text-center pt-28">
         <div className="fade-up fade-up-delay-1 mono text-[#00ff88] text-xs tracking-widest uppercase mb-6">
-          Local lead-list cleanup
+          Pre-outreach lead-list cleanup
         </div>
 
         <h1 className="fade-up fade-up-delay-2 text-5xl md:text-7xl font-light tracking-tight mb-6 leading-[1.1]">
-          Turn messy Google Maps CSVs into
+          Clean scraped lead spreadsheets
           <br />
-          <span className="text-[#00ff88]">outreach-ready lead lists.</span>
+          <span className="text-[#00ff88]">before outreach.</span>
         </h1>
 
         <p className="fade-up fade-up-delay-3 text-lg text-[#666] max-w-xl mx-auto mb-6 leading-relaxed font-light">
-          Clean domains, remove junk rows, detect duplicates, find emails and
-          phones where possible, and classify every row before importing into
-          Instantly, Smartlead, Clay, or your CRM.
+          Turn Google Maps, Outscraper, Apify, Apollo, Clay, or campaign lead
+          CSVs into cleaner outreach-ready files before importing into Instantly,
+          Smartlead, or your CRM.
         </p>
 
         {/* Pain statement */}
         <div className="fade-up fade-up-delay-3 max-w-xl mx-auto mb-10 px-4 py-3 border border-[#1a1a1a] rounded text-left">
           <p className="text-sm text-[#888] leading-relaxed">
-            Bad scraped rows waste credits, hurt deliverability, and create hours
-            of manual cleanup before outreach can even start.
+            Most scraped lead CSVs are not ready to send. SiteEnrich flags
+            duplicate companies, directory/social URLs, bad or missing websites,
+            missing or risky emails, and rows that should be sent, reviewed, or skipped.
           </p>
         </div>
 
@@ -76,7 +77,7 @@ export default function Hero() {
             Run 100 rows free
           </a>
           <a
-            href="/sample-output.csv"
+            href="/siteenrich_sample_output.csv"
             download
             className="px-8 py-3.5 border border-[#1a1a1a] text-[#666] rounded hover:border-[#333] hover:text-white transition-all text-sm"
           >
@@ -87,13 +88,13 @@ export default function Hero() {
         {/* Flow strip */}
         <div className="fade-up fade-up-delay-4 mt-14 flex flex-wrap items-center justify-center gap-0">
           {[
-            { label: "Upload sheet", highlight: false },
+            { label: "Upload file", highlight: false },
             { label: "Clean domains", highlight: false },
             { label: "Detect junk", highlight: false },
             { label: "Find emails + phones", highlight: true },
             { label: "Email check", highlight: false },
             { label: "Dedupe", highlight: false },
-            { label: "Download sheet", highlight: true },
+            { label: "Download file", highlight: true },
           ].map((step, i, arr) => (
             <span key={i} className="flex items-center">
               <span

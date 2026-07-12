@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback } from "react";
 import * as XLSX from "xlsx";
-import ResultCta from "./ResultCta";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://api.siteenrich.io";
 
@@ -51,6 +50,7 @@ export default function CsvUpload() {
   const [ticker, setTicker] = useState<TickerLine[]>([]);
   const [dragging, setDragging] = useState(false);
   const [urlOnlyMode, setUrlOnlyMode] = useState(false);
+  const [showFullFileModal, setShowFullFileModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
@@ -78,6 +78,8 @@ export default function CsvUpload() {
     return /\.(xlsx|xls)$/i.test(f.name);
   }
 
+  // Convert an Excel file to a CSV File object so the rest of the pipeline
+  // (upload, mapping, backend) stays identical. Returns null on failure.
   async function excelToCsvFile(f: File): Promise<File | null> {
     try {
       const buffer = await f.arrayBuffer();
@@ -122,6 +124,7 @@ export default function CsvUpload() {
   }
 
   async function parseFile(f: File) {
+    // If Excel, convert to CSV first
     let workingFile = f;
     if (isExcelFile(f)) {
       const converted = await excelToCsvFile(f);
@@ -251,11 +254,11 @@ export default function CsvUpload() {
   }
 
   const selectClass =
-    "w-full bg-[#1c1c1a] border border-[#323230] text-[#e8e6e0] px-3 py-2 rounded text-[13px] font-mono outline-none focus:border-[#00ff88] appearance-none cursor-pointer";
+    "w-full bg-[#1c1c1a] border border-[#323230] text-[#e8e6e0] px-3 py-2 rounded text-[12px] font-mono outline-none focus:border-[#00ff88] appearance-none cursor-pointer";
 
   return (
     <section id="upload" className="px-6 md:px-10 py-16 max-w-4xl mx-auto border-t border-[#1a1a1a]">
-      <p className="font-mono text-[12px] text-[#00ff88] tracking-widest uppercase mb-5">
+      <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-5">
         Spreadsheet processor — free test
       </p>
 
@@ -267,10 +270,10 @@ export default function CsvUpload() {
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            className={`border border-dashed rounded-lg py-16 px-6 text-center cursor-pointer transition-colors ${
+            className={`border border-dashed rounded-lg py-14 px-6 text-center cursor-pointer transition-colors ${
               dragging
                 ? "border-[#00ff88] bg-[#00ff8808]"
-                : "border-[#333] hover:border-[#00ff88] hover:bg-[#0f0f0f]"
+                : "border-[#222] hover:border-[#333] hover:bg-[#0f0f0f]"
             }`}
           >
             <input
@@ -280,43 +283,44 @@ export default function CsvUpload() {
               className="hidden"
               onChange={e => { if (e.target.files?.[0]) parseFile(e.target.files[0]); }}
             />
-            <div className="text-4xl mb-5 text-[#00ff88] opacity-80">⬆</div>
-            <p className="text-[19px] text-[#e8e6e0] font-semibold mb-2.5">
+            <div className="text-3xl mb-4 opacity-25">⬆</div>
+            <p className="text-[15px] text-[#e8e6e0] font-medium mb-2">
               Drop your spreadsheet or click to browse
             </p>
-            <p className="text-[14px] text-[#a8a49c] mb-3">
+            <p className="text-[12px] text-[#444] mb-3">
               Supports Google Sheets exports, Excel (.xlsx, .xls), and CSV
             </p>
-            <p className="text-[13px] text-[#777] mb-7">
-              Google Maps · Outscraper · Apify · Scrapebox · LocalProspects exports
+            <p className="text-[11px] text-[#333] mb-6">
+              Google Maps · Outscraper · Apify · Apollo · Clay · Scrapebox exports
             </p>
-            <div className="font-mono text-[13px] text-[#888] text-left inline-block border border-[#2a2a2a] rounded px-5 py-3.5 bg-[#0a0a0a]">
-              <div className="text-[#00ff88] mb-1.5">website</div>
+            <div className="font-mono text-[11px] text-[#333] text-left inline-block border border-[#1a1a1a] rounded px-4 py-3 bg-[#0a0a0a]">
+              <div className="text-[#444] mb-1">website</div>
               <div>https://business1.com</div>
               <div>https://business2.com</div>
               <div>https://business3.com</div>
             </div>
-            <p className="text-[13px] text-[#888] mt-5 font-mono">
+            <p className="text-[11px] text-[#333] mt-4 font-mono">
               URL-only spreadsheets are detected automatically — no column mapping needed
             </p>
+            <a
+              href="/sample-output.csv"
+              download
+              onClick={(e) => e.stopPropagation()}
+              className="text-[11px] text-[#00ff88] mt-2 inline-block hover:opacity-80 transition-opacity font-mono"
+            >
+              You can also try the sample file before uploading your own data →
+            </a>
           </div>
-
-          {/* Trust / friction-reduction note */}
-          <p className="mt-5 text-[13px] text-[#999] leading-relaxed">
-            Test with an old or redacted file. You do not need to upload a live
-            client list. For the free test, company name + website/domain +
-            email/phone is enough. Remove anything sensitive before uploading.
-          </p>
         </div>
       )}
 
       {/* STEP 2: CONFIG — only shown for multi-column CSVs */}
       {step === "config" && (
         <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-8">
-          <p className="font-mono text-[11px] text-[#666] tracking-widest uppercase mb-4">
+          <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-4">
             Map columns
           </p>
-          <div className="font-mono text-[12px] text-[#888] bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2 mb-5">
+          <div className="font-mono text-[11px] text-[#666] bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2 mb-5">
             <span className="text-[#00ff88] font-medium">{rowCount}</span> rows loaded
             {rowCount >= 100 ? " — free test processes the first 100 rows" : ""}
             {" · "}If your CSV only contains website URLs, SiteEnrich will detect the column automatically.
@@ -331,12 +335,12 @@ export default function CsvUpload() {
               { label: "Source", req: false, val: colSource, set: setColSource },
             ].map(({ label, req, val, set }) => (
               <div key={label} className="flex flex-col gap-1.5">
-                <label className="font-mono text-[12px] text-[#888]">
+                <label className="font-mono text-[11px] text-[#666]">
                   {label}{" "}
                   {req ? (
                     <span className="text-[#00ff88]">*</span>
                   ) : (
-                    <span className="text-[#555] text-[10px]">optional</span>
+                    <span className="text-[#333] text-[10px]">optional</span>
                   )}
                 </label>
                 <select className={selectClass} value={val} onChange={e => set(e.target.value)}>
@@ -348,7 +352,7 @@ export default function CsvUpload() {
               </div>
             ))}
           </div>
-          <label className="flex items-center gap-2 text-[13px] text-[#888] cursor-pointer mb-5">
+          <label className="flex items-center gap-2 text-[12px] text-[#666] cursor-pointer mb-5">
             <input
               type="checkbox"
               checked={fastMode}
@@ -368,7 +372,7 @@ export default function CsvUpload() {
             </button>
             <button
               onClick={() => setStep("upload")}
-              className="border border-[#333] text-[#888] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#00ff88] hover:text-[#e8e6e0]"
+              className="border border-[#222] text-[#666] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#444] hover:text-[#e8e6e0]"
             >
               ← Back
             </button>
@@ -379,10 +383,10 @@ export default function CsvUpload() {
       {/* STEP 3: PROCESSING */}
       {step === "processing" && (
         <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-8">
-          <p className="font-mono text-[11px] text-[#666] tracking-widest uppercase mb-4">
+          <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-4">
             Processing{" "}
             <span className="text-[#e8e6e0]">{jobStatus?.totalRows ?? rowCount} rows</span>
-            {urlOnlyMode && <span className="text-[#666] ml-2">— URL-only mode</span>}
+            {urlOnlyMode && <span className="text-[#444] ml-2">— URL-only mode</span>}
           </p>
           <div className="bg-[#0a0a0a] rounded-full h-[3px] overflow-hidden mb-4">
             <div
@@ -399,13 +403,13 @@ export default function CsvUpload() {
             ].map(({ val, label }) => (
               <div key={label} className="bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5">
                 <div className="font-mono text-[18px] font-semibold text-[#e8e6e0]">{val}</div>
-                <div className="font-mono text-[9px] text-[#666] uppercase tracking-widest mt-0.5">{label}</div>
+                <div className="font-mono text-[9px] text-[#444] uppercase tracking-widest mt-0.5">{label}</div>
               </div>
             ))}
           </div>
           <div
             ref={tickerRef}
-            className="font-mono text-[12px] bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5 h-28 overflow-y-auto text-[#666]"
+            className="font-mono text-[11px] bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5 h-28 overflow-y-auto text-[#444]"
           >
             {ticker.map((t, i) => (
               <div
@@ -413,8 +417,8 @@ export default function CsvUpload() {
                 className={`mb-0.5 leading-relaxed ${
                   t.type === "ok" ? "text-[#00ff88]"
                   : t.type === "warn" ? "text-[#f5c842]"
-                  : t.type === "skip" ? "text-[#555]"
-                  : "text-[#888]"
+                  : t.type === "skip" ? "text-[#333]"
+                  : "text-[#666]"
                 }`}
               >
                 {t.msg}
@@ -427,7 +431,7 @@ export default function CsvUpload() {
       {/* STEP 4: RESULTS */}
       {step === "results" && jobStatus && (
         <div className="bg-[#111] border border-[#1a1a1a] rounded-lg p-8">
-          <p className="font-mono text-[11px] text-[#666] tracking-widest uppercase mb-5">
+          <p className="font-mono text-[11px] text-[#444] tracking-widest uppercase mb-5">
             Results
           </p>
           <div className="grid grid-cols-4 gap-2 mb-5">
@@ -445,39 +449,166 @@ export default function CsvUpload() {
                 <div className={`font-mono text-[22px] font-semibold leading-none mb-1 ${color || "text-[#e8e6e0]"}`}>
                   {val}
                 </div>
-                <div className="font-mono text-[9px] text-[#666] uppercase tracking-widest">{label}</div>
+                <div className="font-mono text-[9px] text-[#444] uppercase tracking-widest">{label}</div>
               </div>
             ))}
           </div>
+
+          <div className="mb-6 space-y-1.5">
+            <p className="text-[14px] text-[#e8e6e0] font-medium">
+              Most rows in this sample are not ready to import directly into outreach.
+            </p>
+            <p className="text-[13px] text-[#666] leading-relaxed">
+              The downloaded spreadsheet includes a reason for every send, review,
+              or skip decision.
+            </p>
+          </div>
+
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={downloadCsv}
               className="bg-[#00ff88] text-[#0a1a0e] px-5 py-2.5 rounded font-mono text-[13px] font-bold transition-opacity hover:opacity-85"
             >
-              Download CSV
+              Download spreadsheet
+            </button>
+            <button
+              onClick={() => setShowFullFileModal(true)}
+              className="border border-[#00ff8833] text-[#00ff88] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:bg-[#00ff8808]"
+            >
+              Clean my full file
             </button>
             <button
               onClick={restart}
-              className="border border-[#333] text-[#888] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#00ff88] hover:text-[#e8e6e0]"
+              className="border border-[#222] text-[#666] px-4 py-2.5 rounded font-mono text-[13px] transition-colors hover:border-[#444] hover:text-[#e8e6e0]"
             >
               Process another file
             </button>
           </div>
-
-          <ResultCta
-            jobId={jobId!}
-            fileName={file?.name}
-            processed={jobStatus.processedRows}
-            sendable={jobStatus.sendableRows}
-            review={jobStatus.reviewRows}
-            skipped={jobStatus.skippedRows}
-            emailsFound={jobStatus.emailsFound}
-            mxVerified={jobStatus.mxValidEmails}
-            phonesFound={jobStatus.phonesFound}
-            duplicates={jobStatus.duplicateRows}
-          />
         </div>
       )}
+
+      {showFullFileModal && jobStatus && (
+        <FullFileModal
+          jobId={jobId}
+          fileName={file?.name}
+          stats={jobStatus}
+          onClose={() => setShowFullFileModal(false)}
+        />
+      )}
     </section>
+  );
+}
+
+interface FullFileModalProps {
+  jobId: string | null;
+  fileName?: string;
+  stats: JobStatus;
+  onClose: () => void;
+}
+
+function FullFileModal({ jobId, fileName, stats, onClose }: FullFileModalProps) {
+  const [email, setEmail] = useState("");
+  const [note, setNote] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/full-file-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          note,
+          jobId,
+          fileName,
+          totalRows: stats.totalRows,
+          processedRows: stats.processedRows,
+          sendableRows: stats.sendableRows,
+          reviewRows: stats.reviewRows,
+          skippedRows: stats.skippedRows,
+          duplicateRows: stats.duplicateRows,
+          emailsFound: stats.emailsFound,
+          mxValidEmails: stats.mxValidEmails,
+          phonesFound: stats.phonesFound,
+        }),
+      });
+      setStatus(res.ok ? "sent" : "error");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="absolute inset-0 bg-black/70" />
+      <div className="relative bg-[#111] border border-[#222] rounded-lg p-8 w-full max-w-md">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-[#444] hover:text-[#888] transition-colors font-mono text-sm"
+        >
+          ✕
+        </button>
+
+        {status === "sent" ? (
+          <div className="text-center py-6">
+            <div className="text-[#00ff88] text-3xl mb-4">✓</div>
+            <h3 className="text-[#e8e6e0] text-lg font-light mb-2">Got it.</h3>
+            <p className="text-[#555] text-sm leading-relaxed">
+              I'll clean your full file and follow up within 24 hours.
+            </p>
+          </div>
+        ) : (
+          <>
+            <p className="font-mono text-[#00ff88] text-[11px] tracking-widest uppercase mb-2">
+              Clean my full file
+            </p>
+            <h3 className="text-[#e8e6e0] text-xl font-light mb-3">
+              Want the full spreadsheet cleaned?
+            </h3>
+            <p className="text-[#666] text-[13px] leading-relaxed mb-3">
+              The free test covers up to 100 rows. Leave your email and I'll
+              reply personally with next steps.
+            </p>
+            <p className="text-[15px] font-semibold text-white mb-6">
+              Full-file cleanup starts at <span className="text-[#00ff88]">$49</span>.
+            </p>
+            <form onSubmit={submit} className="space-y-4">
+              <input
+                required
+                type="email"
+                placeholder="you@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5 text-sm text-white placeholder-[#333] focus:outline-none focus:border-[#00ff8833] transition-colors"
+              />
+              <textarea
+                placeholder="Optional note — how many rows, what campaign, anything I should know?"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                rows={2}
+                className="w-full bg-[#0a0a0a] border border-[#1a1a1a] rounded px-3 py-2.5 text-sm text-white placeholder-[#333] focus:outline-none focus:border-[#00ff8833] transition-colors resize-none"
+              />
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                className="w-full py-3 bg-[#00ff88] text-black font-medium rounded hover:bg-[#00e87a] transition-all text-sm font-mono disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {status === "sending" ? "Sending..." : "Request full-file cleanup"}
+              </button>
+              {status === "error" && (
+                <p className="font-mono text-[11px] text-red-400 text-center">
+                  Something went wrong. Email alex@siteenrich.io
+                </p>
+              )}
+            </form>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

@@ -6,8 +6,12 @@ export default function PrivacyNote() {
         <div>
           <p className="text-[#e8e6e0] text-[13px] font-medium mb-0.5">Your data stays yours.</p>
           <p className="text-[#555] text-[12px] leading-relaxed">
-            Uploaded CSVs are only used to process your job. Files are never sold, shared, or reused.
+            Uploaded spreadsheets are only used to process your job. Files are never sold, shared, or reused.
             Raw uploads are automatically deleted after processing. You retain full ownership of your data.
+          </p>
+          <p className="text-[#444] text-[12px] leading-relaxed mt-2">
+            Testing with sensitive data? An old or redacted file works fine — company name plus
+            website/domain and email/phone is enough for a useful test.
           </p>
         </div>
       </div>

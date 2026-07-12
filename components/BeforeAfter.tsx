@@ -14,7 +14,7 @@ export default function BeforeAfter() {
     "Website status checked (live / dead / blocked)",
     "Emails and phones extracted where possible",
     "Duplicates detected by phone, email, and domain",
-    "Every row: sendable / review / skip with reasons",
+    "Every row: send / review / skip with reasons",
   ];
 
   return (
